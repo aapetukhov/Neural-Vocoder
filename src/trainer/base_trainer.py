@@ -366,7 +366,7 @@ class BaseTrainer:
             batch[tensor_for_device] = batch[tensor_for_device].to(self.device)
         return batch
 
-    def transform_batch(self, batch):
+    def transform_batch(self, batch) -> dict:
         """
         Transforms elements in batch. Like instance transform inside the
         BaseDataset class, but for the whole batch. Improves pipeline speed,

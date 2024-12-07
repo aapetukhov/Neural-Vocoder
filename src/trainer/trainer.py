@@ -32,20 +32,40 @@ class Trainer(BaseTrainer):
         metric_funcs = self.metrics["inference"]
         if self.is_train:
             metric_funcs = self.metrics["train"]
-            self.optimizer.zero_grad()
+            self.gen_optimizer.zero_grad()
+            self.disc_optimizer.zero_grad()
 
-        outputs = self.model(**batch)
-        batch.update(outputs)
+        # TODO: refactor so it's more compact
+        gen_outputs = self.generator(**batch)
+        batch.update(gen_outputs)
 
-        all_losses = self.criterion(**batch)
+        # discriminator outputs + step
+        disc_outputs = self.discriminator(**batch, detach=True)
+        batch.update(disc_outputs)
+
+        all_disc_losses = self.disc_criterion(**batch)
+        batch.update(all_disc_losses)
+
+        if self.is_train:
+            batch["disc_loss"].backward()  # sum of all losses is always called loss
+            self._clip_grad_norm()
+            self.disc_optimizer.step()
+            if self.disc_scheduler is not None:
+                self.disc_scheduler.step()
+
+        disc_outputs = self.discriminator(**batch, detach=False)
+        batch.update(disc_outputs)
+
+        # generator outputs + step
+        all_losses = self.gen_criterion(**batch)
         batch.update(all_losses)
 
         if self.is_train:
-            batch["loss"].backward()  # sum of all losses is always called loss
+            batch["gen_loss"].backward()
             self._clip_grad_norm()
-            self.optimizer.step()
-            if self.lr_scheduler is not None:
-                self.lr_scheduler.step()
+            self.gen_optimizer.step()
+            if self.gen_scheduler is not None:
+                self.gen_scheduler.step()
 
         # update metrics for each loss (in case of multiple losses)
         for loss_name in self.config.writer.loss_names:
