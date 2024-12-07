@@ -9,6 +9,7 @@ from tqdm.auto import tqdm
 from src.datasets.data_utils import inf_loop
 from src.metrics.tracker import MetricTracker
 from src.utils.io_utils import ROOT_PATH
+from src.transforms.melspec import MelSpectrogram
 
 
 class BaseTrainer:
@@ -130,6 +131,9 @@ class BaseTrainer:
 
         # setup visualization writer instance
         self.writer = writer
+
+        # to calculate melspec for visualization
+        self.melspec = MelSpectrogram(config.mel_spectrogram)
 
         # define metrics
         self.metrics = metrics

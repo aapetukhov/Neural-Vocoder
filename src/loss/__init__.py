@@ -1,1 +1,1 @@
-from src.loss.example import ExampleLoss
+from src.loss.loss import GANLoss, GeneratorLoss, DiscriminatorLoss, FeatureMatchingLoss, MelSpectrogramLoss

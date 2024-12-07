@@ -1,5 +1,8 @@
+import torch
+
 from src.metrics.tracker import MetricTracker
 from src.trainer.base_trainer import BaseTrainer
+from src.logger.utils import plot_spectrogram
 
 
 class Trainer(BaseTrainer):
@@ -92,8 +95,30 @@ class Trainer(BaseTrainer):
 
         # logging scheme might be different for different partitions
         if mode == "train":  # the method is called only every self.log_step steps
-            # Log Stuff
-            pass
+            self.log_spectrogram(**batch)
+            self.log_predictions(**batch)
         else:
-            # Log Stuff
-            pass
+            self.log_spectrogram(**batch)
+            self.log_predictions(**batch)
+
+    def log_audio(self, audio, audio_name):
+        audio = (
+            audio / torch.max(torch.abs(audio)).detach().cpu()
+        )
+        self.writer.add_audio(
+            audio_name,
+            audio.float(),
+            sample_rate=self.config.writer.audio_sample_rate,
+        )
+
+    def log_spectrogram(self, spectrogram, output_audio, **batch):
+        spectrogram_for_plot = spectrogram[0].detach().cpu()
+        melspec = self.melspec(output_audio.detach().cpu())[0]
+
+        self.writer.add_image("target", plot_spectrogram(spectrogram_for_plot))
+        self.writer.add_image("pred", plot_spectrogram(melspec))
+
+    def log_predictions(self, output_audio, audio, examples_to_log=1, **batch):
+        for i, (pred, target) in enumerate(zip(output_audio, audio)):
+            self.log_audio(target, f"gt_{i}")
+            self.log_audio(pred, f"pred_{i}")
