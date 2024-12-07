@@ -38,28 +38,41 @@ def main(config):
     dataloaders, batch_transforms = get_dataloaders(config, device)
 
     # build model architecture, then print to console
-    model = instantiate(config.model).to(device)
-    logger.info(model)
+    generator = instantiate(config.generator, _convert_="partial").to(device)
+    discriminator = instantiate(config.discriminator, _convert_="partial").to(device)
+    logger.info(generator)
+    logger.info(discriminator)
 
     # get function handles of loss and metrics
-    loss_function = instantiate(config.loss_function).to(device)
-    metrics = instantiate(config.metrics)
+    gen_loss_function = instantiate(config.gen_loss_function).to(device)
+    disc_loss_function = instantiate(config.disc_loss_function).to(device)
+    
+    metrics = {"train": [], "inference": []}
 
-    # build optimizer, learning rate scheduler
-    trainable_params = filter(lambda p: p.requires_grad, model.parameters())
-    optimizer = instantiate(config.optimizer, params=trainable_params)
-    lr_scheduler = instantiate(config.lr_scheduler, optimizer=optimizer)
+    # build optimizer, learning rate scheduler for gen
+    gen_params = filter(lambda p: p.requires_grad, generator.parameters())
+    gen_optimizer = instantiate(config.optimizer, params=gen_params)
+    gen_scheduler = instantiate(config.gen_scheduler, optimizer=gen_optimizer)
+
+    # build optimizer, learning rate scheduler for disc
+    disc_params = filter(lambda p: p.requires_grad, discriminator.parameters())
+    disc_optimizer = instantiate(config.optimizer, params=disc_params)
+    disc_scheduler = instantiate(config.disc_scheduler, optimizer=disc_optimizer)
 
     # epoch_len = number of iterations for iteration-based training
     # epoch_len = None or len(dataloader) for epoch-based training
     epoch_len = config.trainer.get("epoch_len")
 
     trainer = Trainer(
-        model=model,
-        criterion=loss_function,
+        generator=generator,
+        discriminator=discriminator,
+        gen_criterion=gen_loss_function,
+        disc_criterion=disc_loss_function,
         metrics=metrics,
-        optimizer=optimizer,
-        lr_scheduler=lr_scheduler,
+        gen_optimizer=gen_optimizer,
+        disc_optimizer=disc_optimizer,
+        gen_scheduler=gen_scheduler,
+        disc_scheduler=disc_scheduler,
         config=config,
         device=device,
         dataloaders=dataloaders,

@@ -31,6 +31,18 @@ class Generator(nn.Module):
         for block in self.upsampling_blocks:
             x = block(x)
         return x.flatten(1)
+    
+    def __str__(self):
+        """
+        Return model details including parameter counts.
+        """
+        all_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+
+        result_str = super().__str__()
+        result_str += f"\nAll parameters: {all_params}"
+        result_str += f"\nTrainable parameters: {trainable_params}"
+        return result_str
 
 
 class Discriminator(nn.Module):
@@ -48,3 +60,15 @@ class Discriminator(nn.Module):
             "scale_disc_pred": self.scale_dics(output_audio),
             "period_disc_pred": self.preiod_disc(output_audio),
         }
+    
+    def __str__(self):
+        """
+        Return model details including parameter counts.
+        """
+        all_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+
+        result_str = super().__str__()
+        result_str += f"\nAll parameters: {all_params}"
+        result_str += f"\nTrainable parameters: {trainable_params}"
+        return result_str
