@@ -44,12 +44,14 @@ class BaseDataset(Dataset):
         """
         self._assert_index_is_valid(index)
 
+        index = self._filter_records_from_dataset(index, max_audio_length)
         index = self._shuffle_and_limit_index(index, limit, shuffle_index)
         self._index: List[dict] = index
 
         self.target_sr = target_sr
         self.instance_transforms = instance_transforms
         self.max_len = max_len
+        self.max_audio_length = max_audio_length
 
     def __getitem__(self, ind):
         """
