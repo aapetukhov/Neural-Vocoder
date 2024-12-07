@@ -98,6 +98,47 @@ class BaseDataset(Dataset):
         audio_tensor = self._process_audio(audio_tensor, self.max_len)
         return audio_tensor
 
+    def get_spectrogram(self, audio):
+        """
+        Special instance transform with a special key to
+        get spectrogram from audio.
+
+        Args:
+            audio (Tensor): original audio.
+        Returns:
+            spectrogram (Tensor): spectrogram for the audio.
+        """
+        return self.instance_transforms["get_spectrogram"](audio)
+
+    def preprocess_data(self, instance_data, special_keys=["get_spectrogram"], single_key=None):
+        """
+        Preprocess data with instance transforms.
+
+        Each tensor in a dict undergoes its own transform defined by the key.
+
+        Args:
+            instance_data (dict): dict, containing instance
+                (a single dataset element).
+            single_key: optional[str]: if set modifies only this key
+        Returns:
+            instance_data (dict): dict, containing instance
+                (a single dataset element) (possibly transformed via
+                instance transform).
+        """
+        if self.instance_transforms is None:
+            return instance_data
+
+        if single_key is not None:
+            if single_key in self.instance_transforms:  # eg train mode
+                instance_data[single_key] = self.instance_transforms[single_key](instance_data[single_key])
+            return instance_data
+
+        for transform_name in self.instance_transforms.keys():
+            if transform_name in special_keys:
+                continue  # skip special key
+            instance_data[transform_name] = self.instance_transforms[transform_name](instance_data[transform_name])
+        return instance_data
+    
     @staticmethod
     def _process_audio(audio_tensor, length):
         # cutting or padding to the required length
@@ -152,47 +193,6 @@ class BaseDataset(Dataset):
             )
 
         return index
-
-    def get_spectrogram(self, audio):
-        """
-        Special instance transform with a special key to
-        get spectrogram from audio.
-
-        Args:
-            audio (Tensor): original audio.
-        Returns:
-            spectrogram (Tensor): spectrogram for the audio.
-        """
-        return self.instance_transforms["get_spectrogram"](audio)
-
-    def preprocess_data(self, instance_data, special_keys=["get_spectrogram"], single_key=None):
-        """
-        Preprocess data with instance transforms.
-
-        Each tensor in a dict undergoes its own transform defined by the key.
-
-        Args:
-            instance_data (dict): dict, containing instance
-                (a single dataset element).
-            single_key: optional[str]: if set modifies only this key
-        Returns:
-            instance_data (dict): dict, containing instance
-                (a single dataset element) (possibly transformed via
-                instance transform).
-        """
-        if self.instance_transforms is None:
-            return instance_data
-
-        if single_key is not None:
-            if single_key in self.instance_transforms:  # eg train mode
-                instance_data[single_key] = self.instance_transforms[single_key](instance_data[single_key])
-            return instance_data
-
-        for transform_name in self.instance_transforms.keys():
-            if transform_name in special_keys:
-                continue  # skip special key
-            instance_data[transform_name] = self.instance_transforms[transform_name](instance_data[transform_name])
-        return instance_data
 
     @staticmethod
     def _assert_index_is_valid(index):
