@@ -3,7 +3,7 @@ defaults:
   - discriminator: default
   - writer: wandb
   - datasets: ljspeech_datasphere
-  - dataloader: default
+  - dataloader: datasphere
   - transforms: melspec
   - _self_
 
