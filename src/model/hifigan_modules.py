@@ -77,6 +77,9 @@ class MRF(nn.Module):
         ])
 
     def forward(self, x):
-        outputs = [block(x) for block in self.blocks]
-        return sum(outputs) / len(outputs)
+        res = 0
+        for block in self.blocks:
+            res = res + x + block(x)
+
+        return res / len(self.blocks)
 
