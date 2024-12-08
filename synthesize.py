@@ -17,10 +17,10 @@ warnings.filterwarnings("ignore", category=UserWarning)
 def main(config):
     set_random_seed(config.inferencer.seed)
 
-    if config.inferences.device == "auto":
+    if config.inferencer.device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
     else:
-        device = config.inferences.device
+        device = config.inferencer.device
 
     dataloaders, batch_transforms = get_dataloaders(config, device)
     generator = instantiate(config.generator).to(device)

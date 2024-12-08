@@ -112,3 +112,9 @@ outputs/
 .vscode/
 .idea/
 __MACOSX/
+
+audios
+texts
+add_wandb.py
+checkpoint-epoch20.pth
+.DS_Store

@@ -10,4 +10,4 @@ inferencer:
   device: auto
   save_path: "result"
   seed: 1
-  from_pretrained: # TODO: add path to the pretrained model
+  from_pretrained: "/Users/andreypetukhov/Documents/Машинное-обучение/Neural-Vocoder/checkpoint-epoch20.pth"

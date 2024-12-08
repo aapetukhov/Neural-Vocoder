@@ -220,7 +220,7 @@ class BaseDataset(Dataset):
             )
             assert "text" in entry, (
                 "Each dataset item should include field 'text'"
-                " - object ground-truth text (trascript)."
+                " - object ground-truth text (transcript)."
             )
             assert "audio_len" in entry, (
                 "Each dataset item should include field 'audio_len'"

@@ -22,6 +22,8 @@
 
 ## About
 
+WANDB LINK: https://api.wandb.ai/links/aapetukhov-new-economic-school/aqrtqb71
+
 This repository contains a template for [PyTorch](https://pytorch.org/)-based Deep Learning projects.
 
 The template utilizes different python-dev techniques to improve code readability. Configuration methods enhance reproducibility and experiments control.

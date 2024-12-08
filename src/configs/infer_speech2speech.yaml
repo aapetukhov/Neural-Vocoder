@@ -1,6 +1,6 @@
 defaults:
   - generator: default
-  - datasets: infer_audio # we do not want to run inference on training data
+  - datasets: infer_speech2speech # we do not want to run inference on training data
   - dataloader: default
   - transforms: melspec
   - _self_
@@ -10,4 +10,4 @@ inferencer:
   device: auto # device name or "auto"
   save_path: "result" # any name here, can be a dataset name
   seed: 1
-  from_pretrained: # TODO: add path to the pretrained model
+  from_pretrained: "/Users/andreypetukhov/Documents/Машинное-обучение/Neural-Vocoder/checkpoint-epoch20.pth"

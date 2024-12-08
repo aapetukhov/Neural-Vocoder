@@ -1,4 +1,4 @@
 test:
   _target_: src.datasets.CustomDirTextDataset
   instance_transforms: ${transforms.instance_transforms.inference}
-  data_dir: # TODO: add path to transcriptions from Max
+  data_dir: "/Users/andreypetukhov/Documents/Машинное-обучение/Neural-Vocoder/texts"
