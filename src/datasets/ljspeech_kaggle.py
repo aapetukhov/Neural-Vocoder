@@ -34,51 +34,6 @@ class LJspeechDatasetKaggle(BaseDataset):
         index = self._get_or_load_index(part)
         super().__init__(index, *args, **kwargs)
 
-    def _load_dataset(self):
-        arch_path = self._data_dir
-        print("Loading LJSpeech")
-        
-        if not arch_path.exists():
-            msg = "DOWNLOADING DATASET, YOU BETTER DON'T"
-            print("-"*len(msg))
-            print(msg)
-            print("-"*len(msg))
-            download_file(URL_LINKS["dataset"], arch_path)
-        else:
-            msg = "Archive already exists at {arch_path}. Skipping download."
-            print("-"*len(msg))
-            print(msg)
-            print("-"*len(msg))
-        
-        extracted_dir = self._data_dir / "LJSpeech-1.1"
-        if not extracted_dir.exists():
-            raise FileNotFoundError(f"Expected directory {extracted_dir} not found after extraction.")
-        
-        for fpath in extracted_dir.iterdir():
-            shutil.move(str(fpath), str(self._data_dir / fpath.name))
-        
-        os.remove(str(arch_path))
-        shutil.rmtree(str(extracted_dir))
-        
-        wav_dir = self._data_dir / "wavs"
-        if not wav_dir.exists():
-            raise FileNotFoundError(f"Expected wavs directory {wav_dir} not found.")
-        
-        files = list(wav_dir.iterdir())
-        train_length = int(0.85 * len(files)) 
-        train_dir = self._data_dir / "train"
-        test_dir = self._data_dir / "test"
-        train_dir.mkdir(exist_ok=True, parents=True)
-        test_dir.mkdir(exist_ok=True, parents=True)
-        
-        for i, fpath in enumerate(files):
-            if i < train_length:
-                shutil.move(str(fpath), str(train_dir / fpath.name))
-            else:
-                shutil.move(str(fpath), str(test_dir / fpath.name))
-        
-        shutil.rmtree(str(wav_dir))
-
     def _get_or_load_index(self, part):
         index_path = self._index_dir / f"{part}_index.json"
         if index_path.exists():
@@ -93,32 +48,45 @@ class LJspeechDatasetKaggle(BaseDataset):
     def _create_index(self, part):
         index = []
         split_dir = self._data_dir / part
-        if not split_dir.exists():
-            self._load_dataset()
-
-        wav_dirs = set()
-        for dirpath, dirnames, filenames in os.walk(str(split_dir)):
-            if any([f.endswith(".wav") for f in filenames]):
-                wav_dirs.add(dirpath)
+        wav_dir = self._data_dir / "wavs"
+        if not wav_dir.exists():
+            raise FileNotFoundError(f"Expected wavs directory {wav_dir} not found.")
         
-        for wav_dir in tqdm(list(wav_dirs), desc=f"Preparing LJSpeech folders: {part}"):
-            wav_dir = Path(wav_dir)
-            trans_path = list(self._data_dir.glob("*.csv"))[0]
-            with trans_path.open() as f:
-                for line in f:
-                    w_id = line.split("|")[0]
-                    w_text = " ".join(line.split("|")[1:]).strip()
-                    wav_path = wav_dir / f"{w_id}.wav"
-                    if not wav_path.exists(): 
-                        continue
-                    t_info = torchaudio.info(str(wav_path))
-                    length = t_info.num_frames / t_info.sample_rate
-                    if w_text.isascii():
-                        index.append(
-                            {
-                                "path": str(wav_path.absolute().resolve()),
-                                "text": w_text.lower(),
-                                "audio_len": length,
-                            }
-                        )
+        trans_path = self._data_dir / "metadata.csv"
+        if not trans_path.exists():
+            raise FileNotFoundError(f"Expected metadata file {trans_path} not found.")
+        
+        # Читаем метаданные
+        with trans_path.open() as f:
+            metadata = [line.strip().split("|") for line in f]
+        
+        files = list(wav_dir.iterdir())
+        train_length = int(0.85 * len(files)) 
+        
+        train_dir = self._data_dir / "train"
+        test_dir = self._data_dir / "test"
+        train_dir.mkdir(exist_ok=True, parents=True)
+        test_dir.mkdir(exist_ok=True, parents=True)
+        
+        for i, fpath in enumerate(files):
+            if i < train_length:
+                (train_dir / fpath.name).write_bytes(fpath.read_bytes())
+            else:
+                (test_dir / fpath.name).write_bytes(fpath.read_bytes())
+        
+        for entry in tqdm(metadata, desc=f"Processing metadata for {part}"):
+            w_id, w_text, _ = entry
+            wav_path = split_dir / f"{w_id}.wav"
+            if not wav_path.exists():
+                continue
+            t_info = torchaudio.info(str(wav_path))
+            length = t_info.num_frames / t_info.sample_rate
+            if w_text.isascii():
+                index.append(
+                    {
+                        "path": str(wav_path.absolute().resolve()),
+                        "text": w_text.lower(),
+                        "audio_len": length,
+                    }
+                )
         return index
