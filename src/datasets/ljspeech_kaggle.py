@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 class LJspeechDatasetKaggle(BaseDataset):
     def __init__(self, part, data_dir=None, *args, **kwargs):
+        
         index_path = WORKING_PATH / "data_index"
         index_path.mkdir(exist_ok=True, parents=True)
         

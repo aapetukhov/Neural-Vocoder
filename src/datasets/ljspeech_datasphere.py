@@ -15,12 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 class LJspeechDatasetDatasphere(BaseDataset):
-    def __init__(self, part, data_dir=None):
+    def __init__(self, part, data_dir=None, *args, **kwargs):
         if data_dir is None:
             data_dir = Path("/home/jupyter/work/resources/Neural-Vocoder")
         self._data_dir = data_dir
         index = self._get_or_load_index(part)
         self.index = index
+        
+        super().__init__(index, *args, **kwargs)
 
     def _load_dataset(self):
         arch_path = self._data_dir / "LJSpeech-1.1.tar.bz2"
