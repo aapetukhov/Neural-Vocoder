@@ -68,4 +68,4 @@ class GeneratorLoss(nn.Module):
         )
 
         total_loss = adversarial_loss + self.lambda_fm * feature_loss + self.lambda_mel * mel_loss
-        return {"loss": total_loss}
+        return {"gen_loss": total_loss}
