@@ -251,7 +251,7 @@ class BaseTrainer:
                     )
                 )
                 self.writer.add_scalar(
-                    "learning rate", self.lr_scheduler.get_last_lr()[0]
+                    "learning rate", self.gen_scheduler.get_last_lr()[0]
                 )
                 self._log_scalars(self.train_metrics)
                 self._log_batch(batch_idx, batch)
