@@ -14,7 +14,7 @@ def collate_fn(dataset_items: list[dict]):
         result_batch (dict[Tensor]): dict, containing batch-version
             of the tensors.
     """
-    msg = f"SPEC SHAPE IS: {dataset_items[0]["spectrogram"].shape}"
+    msg = f"SPEC SHAPE IS: {dataset_items[0]['spectrogram'].shape}"
     print("-"*len(msg), msg, "-"*len(msg))
 
     audios = [audio for item in dataset_items for audio in item["audio"]]
