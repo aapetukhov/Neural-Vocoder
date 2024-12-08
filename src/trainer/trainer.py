@@ -115,7 +115,7 @@ class Trainer(BaseTrainer):
         self.writer.add_image("target", plot_spectrogram(spectrogram_for_plot))
         self.writer.add_image("pred", plot_spectrogram(melspec))
 
-    def log_predictions(self, output_audio, audio, examples_to_log=1, **batch):
+    def log_predictions(self, output_audio, audio, **batch):
         for i, (pred, target) in enumerate(zip(output_audio, audio)):
             self.log_audio(target, f"gt_{i}")
             self.log_audio(pred, f"pred_{i}")
