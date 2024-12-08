@@ -2,7 +2,7 @@ train:
   get_spectrogram:
     _target_: src.transforms.MelSpectrogram
     config:
-      sr: 22050
+      sample_rate: 22050
       win_length: 1024
       hop_length: 256
       n_fft: 1024
@@ -17,7 +17,7 @@ inference:
   get_spectrogram:
     _target_: src.transforms.MelSpectrogram
     config:
-      sr: 22050
+      sample_rate: 22050
       win_length: 1024
       hop_length: 256
       n_fft: 1024
