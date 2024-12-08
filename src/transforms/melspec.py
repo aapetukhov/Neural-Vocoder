@@ -4,7 +4,7 @@ import torch.nn as nn
 import librosa
 
 
-PAD_CONST = -11.51292
+PAD_CONST = -11.5129251
 
 
 class MelSpectrogram(nn.Module):

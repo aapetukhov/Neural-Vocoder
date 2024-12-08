@@ -2,7 +2,7 @@ import torch
 from torch.nn.utils.rnn import pad_sequence
 from itertools import chain
 
-PAD_CONST = -11.51292
+PAD_CONST = -11.5129251
 
 def collate_fn(dataset_items: list[dict]):
     """
