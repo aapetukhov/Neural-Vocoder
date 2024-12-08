@@ -211,9 +211,13 @@ class BaseDataset(Dataset):
             assert "path" in entry, (
                 "Each dataset item should include field 'path'" " - path to audio file."
             )
-            assert "label" in entry, (
-                "Each dataset item should include field 'label'"
-                " - object ground-truth label."
+            assert "text" in entry, (
+                "Each dataset item should include field 'text'"
+                " - object ground-truth text (trascript)."
+            )
+            assert "audio_len" in entry, (
+                "Each dataset item should include field 'audio_len'"
+                " - length of the audio."
             )
 
     @staticmethod
