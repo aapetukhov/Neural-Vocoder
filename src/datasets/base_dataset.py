@@ -70,19 +70,24 @@ class BaseDataset(Dataset):
         """
         data_dict = self._index[ind]
         audio_path = data_dict["path"]
-        audio = self.load_audio(audio_path)
+        audio = self.load_audio(audio_path) if str(audio_path).split(".")[-1] == "wav" else None
         text = data_dict["text"]
-        spectrogram = self.get_spectrogram(audio)
+        
+        spectrogram = (
+            self.get_spectrogram(audio)
+            if audio is not None
+            else self.get_spectrogram([text])
+        )
 
         instance_data = {
-            "text": text,
-            "audio_path": audio_path,
             "audio": audio,
             "spectrogram": spectrogram,
+            "text": text,
+            "audio_path": audio_path,
         }
         for key, value in instance_data.items():
             if isinstance(value, torch.Tensor):
-                assert value.device.type == "cpu", f"{key} is on {value.device.type}"
+                assert value.device.type == 'cpu', f"{key} is on {value.device.type}"
 
         return instance_data
 
@@ -112,7 +117,7 @@ class BaseDataset(Dataset):
         """
         return self.instance_transforms["get_spectrogram"](audio)
 
-    def preprocess_data(self, instance_data, special_keys=["get_spectrogram"], single_key=None):
+    def preprocess_data(self, instance_data):
         """
         Preprocess data with instance transforms.
 
@@ -127,18 +132,13 @@ class BaseDataset(Dataset):
                 (a single dataset element) (possibly transformed via
                 instance transform).
         """
-        if self.instance_transforms is None:
-            return instance_data
-
-        if single_key is not None:
-            if single_key in self.instance_transforms:  # eg train mode
-                instance_data[single_key] = self.instance_transforms[single_key](instance_data[single_key])
-            return instance_data
-
-        for transform_name in self.instance_transforms.keys():
-            if transform_name in special_keys:
-                continue  # skip special key
-            instance_data[transform_name] = self.instance_transforms[transform_name](instance_data[transform_name])
+        if self.instance_transforms is not None:
+            for transform_name in self.instance_transforms.keys():
+                if transform_name == "get_spectrogram":
+                    continue  # skip special key
+                instance_data[transform_name] = self.instance_transforms[
+                    transform_name
+                ](instance_data[transform_name])
         return instance_data
     
     @staticmethod
