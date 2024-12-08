@@ -23,7 +23,7 @@ disc_scheduler:
 
 gen_loss_function:
   _target_: src.loss.GeneratorLoss
-  config: ${transforms.instance_stransforms.get_spectrogram.config}
+  config: ${transforms.instance_transforms.get_spectrogram.config}
 
 disc_loss_function:
   _target_: src.loss.DiscriminatorLoss
