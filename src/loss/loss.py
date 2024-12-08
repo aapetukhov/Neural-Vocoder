@@ -40,9 +40,9 @@ class DiscriminatorLoss(nn.Module):
         super().__init__()
         self.gan_loss = GANLoss(is_discriminator=True)
 
-    def forward(self, msd_preds, msd_targets, mpd_preds, mpd_targets, **batch):
-        msd_loss = sum(self.gan_loss(pred, target) for pred, target in zip(msd_preds[-1], msd_targets[-1]))
-        mpd_loss = sum(self.gan_loss(pred, target) for pred, target in zip(mpd_preds[-1], mpd_targets[-1]))
+    def forward(self, scale_disc_pred, scale_disc_gt, period_disc_pred, period_disc_gt, **batch):
+        msd_loss = sum(self.gan_loss(pred, target) for pred, target in zip(scale_disc_pred[-1], scale_disc_gt[-1]))
+        mpd_loss = sum(self.gan_loss(pred, target) for pred, target in zip(period_disc_pred[-1], period_disc_gt[-1]))
         return {"disc_loss": msd_loss + mpd_loss}
 
 
@@ -56,15 +56,15 @@ class GeneratorLoss(nn.Module):
         self.lambda_mel = lambda_mel
         self.lambda_fm = lambda_fm
 
-    def forward(self, msd_preds, msd_targets, mpd_preds, mpd_targets, output_audio, spectrogram, **batch):
+    def forward(self, scale_disc_pred, scale_disc_gt, period_disc_pred, period_disc_gt, output_audio, spectrogram, **batch):
         mel_loss = self.mel_loss_fn(output_audio, spectrogram.to(self.device))
         feature_loss = (
-            self.feature_matching_loss(msd_preds[:-1], msd_targets[:-1]) +
-            self.feature_matching_loss(mpd_preds[:-1], mpd_targets[:-1])
+            self.feature_matching_loss(scale_disc_pred[:-1], scale_disc_gt[:-1]) +
+            self.feature_matching_loss(period_disc_pred[:-1], period_disc_gt[:-1])
         )
         adversarial_loss = (
-            sum(self.gan_loss(pred, torch.ones_like(pred)) for pred in msd_preds[-1]) +
-            sum(self.gan_loss(pred, torch.ones_like(pred)) for pred in mpd_preds[-1])
+            sum(self.gan_loss(pred, torch.ones_like(pred)) for pred in scale_disc_pred[-1]) +
+            sum(self.gan_loss(pred, torch.ones_like(pred)) for pred in period_disc_pred[-1])
         )
 
         total_loss = adversarial_loss + self.lambda_fm * feature_loss + self.lambda_mel * mel_loss
