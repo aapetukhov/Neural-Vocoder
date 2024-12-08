@@ -38,7 +38,7 @@ class MPD(nn.Module):
 
     def forward(self, input_audio):
         features = []
-        for period, convs in zip(self.periods, self.discriminators):
+        for period, layer in zip(self.periods, self.discriminators):
             pad_size = (period - input_audio.size(1) % period) % period
             if pad_size > 0:
                 padded_input = F.pad(input_audio, (0, pad_size), mode="reflect")
@@ -48,7 +48,7 @@ class MPD(nn.Module):
             x = padded_input.view(input_audio.size(0), 1, -1, period)
 
             res = []
-            for conv in convs:
+            for conv in layer:
                 x = conv(x)
                 res.append(x)
 
@@ -58,7 +58,7 @@ class MPD(nn.Module):
 
 
 
-class MSD(nn.Module):    
+class MSD(nn.Module):
     def __init__(self):
         super().__init__()
         self.discriminators = nn.ModuleList([
@@ -97,16 +97,33 @@ class MSD(nn.Module):
         ])
 
     def forward(self, audio):
+        # res = []
+        # x = audio.unsqueeze(1)  # 1D -> 2D: [B, C, T]
+        # for i, disc in enumerate(self.discriminators):
+        #     if i > 0:
+        #         x = self.pools[i - 1](x)
+        #     ones = []
+        #     for layer in disc:
+        #         x = layer(x)
+        #         ones.append(x)
+        #     res.append(ones)
+        # return res
+    
         res = []
-        x = audio.unsqueeze(1)  # 1D -> 2D: [B, C, T]
-        for i, disc in enumerate(self.discriminators):
-            if i > 0:
-                x = self.pools[i - 1](x)
+        for i, discriminator in enumerate(self.discriminators):
+            if i == 0:
+                x = audio
+            else:
+                x = self.pools[i - 1](audio)
+
+            x = x.unsqueeze(1)
             ones = []
-            for layer in disc:
+            for layer in discriminator:
                 x = layer(x)
                 ones.append(x)
+            
             res.append(ones)
+        
         return res
 
 

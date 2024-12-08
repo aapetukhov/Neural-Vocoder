@@ -10,6 +10,10 @@ class Generator(nn.Module):
     def __init__(self, h_u: int = 512, k_u: list =[16, 16, 4, 4]):
         super().__init__()
         self.conv1 = weight_norm(nn.Conv1d(80, h_u, kernel_size=7, padding=3))
+        self.conv2 = nn.Sequential(
+            nn.LeakyReLU(0.1),
+            weight_norm(nn.Conv1d(h_u // (2 ** len(k_u)), 1, kernel_size=7, padding=3))
+        )
         
         layers = []
         for i, k in enumerate(k_u):
@@ -21,11 +25,7 @@ class Generator(nn.Module):
                 MRF(out_channels)
             ]
         self.layers = nn.Sequential(*layers)
-        
-        self.conv2 = nn.Sequential(
-            nn.LeakyReLU(0.1),
-            weight_norm(nn.Conv1d(h_u // (2 ** len(k_u)), 1, kernel_size=7, padding=3))
-        )
+
         self.tanh = nn.Tanh()
 
     def forward(self, spectrogram: torch.Tensor, **batch) -> dict:
@@ -33,8 +33,9 @@ class Generator(nn.Module):
         x = self.layers(x)
         x = self.conv2(x)
         x = self.tanh(x)
+        x = torch.flatten(x, 1)
 
-        return {"output_audio": torch.flatten(x, start_dim=1)}
+        return {"output_audio": x}
     
     def __str__(self):
         """

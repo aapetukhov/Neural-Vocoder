@@ -45,7 +45,6 @@ class Trainer(BaseTrainer):
         # discriminator outputs + step
         disc_outputs = self.discriminator(**batch, detach=True)
         batch.update(disc_outputs)
-
         all_disc_losses = self.disc_criterion(**batch)
         batch.update(all_disc_losses)
 
@@ -53,8 +52,7 @@ class Trainer(BaseTrainer):
             batch["disc_loss"].backward()  # sum of all losses is always called loss
             self._clip_grad_norm()
             self.disc_optimizer.step()
-            if self.disc_scheduler is not None:
-                self.disc_scheduler.step()
+            self.disc_scheduler.step()
 
         disc_outputs = self.discriminator(**batch, detach=False)
         batch.update(disc_outputs)
@@ -67,8 +65,7 @@ class Trainer(BaseTrainer):
             batch["gen_loss"].backward()
             self._clip_grad_norm()
             self.gen_optimizer.step()
-            if self.gen_scheduler is not None:
-                self.gen_scheduler.step()
+            self.gen_scheduler.step()
 
         # update metrics for each loss (in case of multiple losses)
         for loss_name in self.config.writer.loss_names:
