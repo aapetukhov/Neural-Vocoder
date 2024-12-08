@@ -1,0 +1,10 @@
+train:
+  _target_: src.datasets.LJspeechDatasetKaggle
+  limit: 1
+  part: "train"
+  instance_transforms: ${transforms.instance_transforms.train}
+test:
+  limit: 1
+  _target_: src.datasets.LJspeechDatasetKaggle
+  part: "test"
+  instance_transforms: ${transforms.instance_transforms.inference}
