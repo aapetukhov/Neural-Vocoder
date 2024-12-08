@@ -49,8 +49,6 @@ class LJspeechDatasetKaggle(BaseDataset):
             print("-"*len(msg))
             print(msg)
             print("-"*len(msg))
-
-        shutil.unpack_archive(arch_path, self._data_dir)
         
         extracted_dir = self._data_dir / "LJSpeech-1.1"
         if not extracted_dir.exists():
