@@ -22,10 +22,10 @@ disc_scheduler:
   gamma: 0.999
 
 gen_loss_function:
-  _target_: src.loss.GenLoss
+  _target_: src.loss.GeneratorLoss
 
 disc_loss_function:
-  _target_: src.loss.DiscLoss
+  _target_: src.loss.DiscriminatorLoss
 
 trainer:
   log_step: 10

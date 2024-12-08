@@ -5,7 +5,6 @@ from src.transforms import MelSpectrogram
 
 
 class GANLoss(nn.Module):
-    """GAN loss for adversarial training"""
     def __init__(self, is_discriminator=True):
         super().__init__()
         self.is_discriminator = is_discriminator
@@ -20,7 +19,6 @@ class GANLoss(nn.Module):
 
 
 class MelSpectrogramLoss(nn.Module):
-    """Mel-Spectrogram loss for real and generated audio"""
     def __init__(self, config, device="cuda"):
         super().__init__()
         self.mel_spectrogram = MelSpectrogram(config).to(device)
@@ -31,7 +29,6 @@ class MelSpectrogramLoss(nn.Module):
 
 
 class FeatureMatchingLoss(nn.Module):
-    """Feature Matching loss to align generator and discriminator features"""
     def forward(self, preds, targets):
         return sum(
             l1_loss(p, t) for pred, target in zip(preds, targets) for p, t in zip(pred, target)
@@ -39,7 +36,6 @@ class FeatureMatchingLoss(nn.Module):
 
 
 class DiscriminatorLoss(nn.Module):
-    """Final Discriminator loss for multiple discriminators"""
     def __init__(self):
         super().__init__()
         self.gan_loss = GANLoss(is_discriminator=True)
@@ -51,7 +47,6 @@ class DiscriminatorLoss(nn.Module):
 
 
 class GeneratorLoss(nn.Module):
-    """Final generator loss"""
     def __init__(self, device="cuda", lambda_mel: float = 45.0, lambda_fm: float = 2.0):
         super().__init__()
         self.device = device
