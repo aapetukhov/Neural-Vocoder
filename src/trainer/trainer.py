@@ -113,7 +113,7 @@ class Trainer(BaseTrainer):
 
     def log_spectrogram(self, spectrogram, output_audio, **batch):
         spectrogram_for_plot = spectrogram[0].detach().cpu()
-        melspec = self.melspec(output_audio.detach().cpu())[0]
+        melspec = self.melspec(output_audio)[0].detach().cpu()
 
         self.writer.add_image("target", plot_spectrogram(spectrogram_for_plot))
         self.writer.add_image("pred", plot_spectrogram(melspec))
