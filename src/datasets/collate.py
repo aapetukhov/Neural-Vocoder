@@ -21,7 +21,7 @@ def collate_fn(dataset_items: list[dict]):
     print(msg)
     print("-"*len(msg))
 
-    audios = [audio for item in dataset_items for audio in item["audio"]]
+    audios = list(chain.from_iterable(item['audio'] for item in dataset_items))
     audios = pad_sequence(audios, batch_first=True)
 
     spectrograms = list(chain.from_iterable(item['spectrogram'].transpose(1, 2) for item in dataset_items))
