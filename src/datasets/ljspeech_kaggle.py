@@ -12,7 +12,11 @@ import logging
 
 from src.datasets.base_dataset import BaseDataset
 
-ROOT_PATH = Path("/kaggle/input/the-lj-speech-dataset/LJSpeech-1.1")
+# FOR SAFARI:
+# ROOT_PATH = Path("/kaggle/input/the-lj-speech-dataset/LJSpeech-1.1")
+
+# FOR GOOGLE
+ROOT_PATH = Path("/kaggle/input/LJSpeech-1.1")
 WORKING_PATH = Path("/kaggle/working/Neural-Vocoder")
 
 URL_LINKS = {
