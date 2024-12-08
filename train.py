@@ -46,6 +46,8 @@ def main(config):
     # get function handles of loss and metrics
     gen_loss_function = instantiate(config.gen_loss_function).to(device)
     disc_loss_function = instantiate(config.disc_loss_function).to(device)
+
+    mel_spectrogram = instantiate(config.mel_spectrogram).to(device)
     
     metrics = {"train": [], "inference": []}
 
@@ -73,6 +75,7 @@ def main(config):
         disc_optimizer=disc_optimizer,
         gen_scheduler=gen_scheduler,
         disc_scheduler=disc_scheduler,
+        mel_spectrogram=mel_spectrogram,
         config=config,
         device=device,
         dataloaders=dataloaders,

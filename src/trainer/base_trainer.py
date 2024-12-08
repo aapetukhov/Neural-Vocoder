@@ -29,6 +29,7 @@ class BaseTrainer:
         gen_scheduler,
         disc_scheduler,
         config,
+        mel_spectrogram,
         device,
         dataloaders,
         logger,
@@ -133,7 +134,7 @@ class BaseTrainer:
         self.writer = writer
 
         # to calculate melspec for visualization
-        self.melspec = MelSpectrogram(config.mel_spectrogram)
+        self.melspec = mel_spectrogram
 
         # define metrics
         self.metrics = metrics

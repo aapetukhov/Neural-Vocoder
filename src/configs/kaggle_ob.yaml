@@ -7,6 +7,11 @@ defaults:
   - transforms: melspec
   - _self_
 
+mel_spectrogram:
+  _target_: src.transforms.MelSpectrogram
+  config: ${transforms.instance_transforms.train.get_spectrogram.config}
+  normalize: True
+
 optimizer:
   _target_: torch.optim.AdamW
   lr: 2e-4
