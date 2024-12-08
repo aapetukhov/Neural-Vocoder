@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import random
 from pathlib import Path
 
 import torchaudio
@@ -25,14 +26,14 @@ logger = logging.getLogger(__name__)
 
 class LJspeechDatasetKaggle(BaseDataset):
     def __init__(self, part, data_dir=None, *args, **kwargs):
-        index_path = WORKING_PATH / "data_index"
+        index_path = Path("/kaggle/working/Neural-Vocoder/data_index")
         index_path.mkdir(exist_ok=True, parents=True)
         
         if data_dir is None:
             data_dir = ROOT_PATH
         self._data_dir = data_dir
         self._index_dir = index_path
-        
+
         index = self._get_or_load_index(part)
         super().__init__(index, *args, **kwargs)
 
@@ -48,46 +49,39 @@ class LJspeechDatasetKaggle(BaseDataset):
         return index
 
     def _create_index(self, part):
-        index = []
-        split_dir = WORKING_PATH / part
         wav_dir = self._data_dir / "wavs"
+        metadata_path = self._data_dir / "metadata.csv"
+
         if not wav_dir.exists():
             raise FileNotFoundError(f"Expected wavs directory {wav_dir} not found.")
+        if not metadata_path.exists():
+            raise FileNotFoundError(f"Expected metadata file {metadata_path} not found.")
         
-        trans_path = self._data_dir / "metadata.csv"
-        if not trans_path.exists():
-            raise FileNotFoundError(f"Expected metadata file {trans_path} not found.")
-        
-        train_dir = WORKING_PATH / "train"
-        test_dir = WORKING_PATH / "test"
-        train_dir.mkdir(exist_ok=True, parents=True)
-        test_dir.mkdir(exist_ok=True, parents=True)
-
         files = list(wav_dir.iterdir())
-        train_length = int(0.85 * len(files)) 
-        
-        for i, fpath in enumerate(files):
-            if i < train_length:
-                (train_dir / fpath.name).write_bytes(fpath.read_bytes())
-            else:
-                (test_dir / fpath.name).write_bytes(fpath.read_bytes())
+        random.shuffle(files)
+        train_length = int(0.85 * len(files))
+        train_files = set(files[:train_length])
+        test_files = set(files[train_length:])
 
-        with trans_path.open() as f:
+        with metadata_path.open() as f:
             metadata = [line.strip().split("|") for line in f]
-        
-        for entry in tqdm(metadata, desc=f"Processing metadata for {part}"):
+
+        index = []
+        for entry in tqdm(metadata, desc=f"Creating index for {part}"):
             w_id, w_text, _ = entry
-            wav_path = split_dir / f"{w_id}.wav"
+            wav_path = wav_dir / f"{w_id}.wav"
             if not wav_path.exists():
                 continue
+            
             t_info = torchaudio.info(str(wav_path))
             length = t_info.num_frames / t_info.sample_rate
-            if w_text.isascii():
-                index.append(
-                    {
-                        "path": str(wav_path.absolute().resolve()),
-                        "text": w_text.lower(),
-                        "audio_len": length,
-                    }
-                )
+
+            split = "train" if wav_path in train_files else "test"
+
+            if split == part:
+                index.append({
+                    "path": str(wav_path),
+                    "text": w_text.lower(),
+                    "audio_len": length,
+                })
         return index
