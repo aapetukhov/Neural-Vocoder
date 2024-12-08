@@ -7,6 +7,11 @@ defaults:
   - transforms: melspec
   - _self_
 
+mel_spectrogram:
+  _target_: src.transforms.MelSpectrogram
+  config: ${transforms.instance_transforms.train.get_spectrogram.config}
+  normalize: True
+
 optimizer:
   _target_: torch.optim.AdamW
   lr: 2e-4
@@ -22,10 +27,11 @@ disc_scheduler:
   gamma: 0.999
 
 gen_loss_function:
-  _target_: src.loss.GenLoss
+  _target_: src.loss.GeneratorLoss
+  config: ${transforms.instance_transforms.train.get_spectrogram.config}
 
 disc_loss_function:
-  _target_: src.loss.DiscLoss
+  _target_: src.loss.DiscriminatorLoss
 
 trainer:
   log_step: 250
@@ -35,7 +41,8 @@ trainer:
   device: auto # device name or "auto"
   override: True # if True, will override the previous run with the same name
   monitor: "min test_loss" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
-  save_period: 5 # checkpoint each save_period epochs in addition to the best epoch
+  save_period: 20 # checkpoint each save_period epochs in addition to the best epoch
   early_stop: ${trainer.n_epochs} # epochs for early stopping
   save_dir: "saved"
   seed: 1
+  max_grad_norm: 10
