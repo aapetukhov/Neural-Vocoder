@@ -3,6 +3,8 @@ import torchaudio
 import torch.nn as nn
 import librosa
 
+from speechbrain.inference.TTS import FastSpeech2
+
 
 PAD_CONST = -11.5129251
 
@@ -37,3 +39,19 @@ class MelSpectrogram(nn.Module):
         )
         melspec = self.mel_spectrogram(audio).clamp_(min=1e-5).log_()
         return melspec
+    
+
+class Text2Spec(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.text2spec = FastSpeech2.from_hparams(
+            source="speechbrain/tts-fastspeech2-ljspeech", savedir="pretrained_models/tts-fastspeech2-ljspeech"
+        )
+
+    def forward(self, text: torch.Tensor) -> torch.Tensor:
+        if isinstance(text, list):
+            spec, output_lengths, alignments, _ = self.text2spec.encode_text(text)
+        else:
+            spec, output_lengths, alignments, _ = self.text2spec.encode_text([text])
+
+        return spec
