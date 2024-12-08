@@ -48,7 +48,7 @@ class LJspeechDatasetKaggle(BaseDataset):
     def _create_index(self, part):
         index = []
         split_dir = self._data_dir / part
-        wav_dir = self._data_dir / "wavs"
+        wav_dir = self._data_dir / "LJSpeech-1.1" / "wavs"
         if not wav_dir.exists():
             raise FileNotFoundError(f"Expected wavs directory {wav_dir} not found.")
         
