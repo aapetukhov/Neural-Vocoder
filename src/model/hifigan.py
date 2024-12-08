@@ -7,31 +7,34 @@ from src.model.hifigan_modules import MSD, MPD, MRF
 
 
 class Generator(nn.Module):
-    def __init__(self, channels=512, upsample_rates=[16, 16, 4, 4]):
+    def __init__(self, h_u: int = 512, k_u: list =[16, 16, 4, 4]):
         super().__init__()
-        self.input_conv = weight_norm(nn.Conv1d(80, channels, kernel_size=7, padding=3))
-        self.upsampling_blocks = nn.ModuleList([
-            nn.Sequential(
+        self.conv1 = weight_norm(nn.Conv1d(80, h_u, kernel_size=7, padding=3))
+        
+        layers = []
+        for i, k in enumerate(k_u):
+            in_channels = h_u // (2 ** i)
+            out_channels = h_u // (2 ** (i + 1))
+            layers += [
                 nn.LeakyReLU(0.1),
-                weight_norm(nn.ConvTranspose1d(
-                    channels // (2 ** i), channels // (2 ** (i + 1)),
-                    kernel_size=r, stride=r // 2, padding=r // 4
-                )),
-                MRF(channels // (2 ** (i + 1)))
-            ) for i, r in enumerate(upsample_rates)
-        ])
-        self.output_conv = nn.Sequential(
+                weight_norm(nn.ConvTranspose1d(in_channels, out_channels, kernel_size=k, stride=k//2, padding=k//4)),
+                MRF(out_channels)
+            ]
+        self.layers = nn.Sequential(*layers)
+        
+        self.conv2 = nn.Sequential(
             nn.LeakyReLU(0.1),
-            weight_norm(nn.Conv1d(channels // (2 ** len(upsample_rates)), 1, kernel_size=7, padding=3)),
-            nn.Tanh()
+            weight_norm(nn.Conv1d(h_u // (2 ** len(k_u)), 1, kernel_size=7, padding=3))
         )
+        self.tanh = nn.Tanh()
 
-    def forward(self, spectrogram, **batch) -> dict:
-        x = self.input_conv(spectrogram)
-        for block in self.upsampling_blocks:
-            x = block(x)
-        x = torch.flatten(x, start_dim=1)
-        return {"output_audio": x}
+    def forward(self, spectrogram: torch.Tensor, **batch) -> dict:
+        x = self.conv1(spectrogram)
+        x = self.layers(x)
+        x = self.conv2(x)
+        x = self.tanh(x)
+
+        return {"output_audio": torch.flatten(x, start_dim=1)}
     
     def __str__(self):
         """
