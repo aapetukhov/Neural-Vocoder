@@ -1,0 +1,13 @@
+defaults:
+  - generator: default
+  - datasets: infer_text2speech # we do not want to run inference on training data
+  - dataloader: infer_text2speech
+  - transforms: text2spec
+  - _self_
+
+inferencer:
+  device_tensors: ["spectrogram"] # which tensors should be on device (ex. GPU)
+  device: auto # device name or "auto"
+  save_path: "result" # any name here, can be a dataset name
+  seed: 1
+  from_pretrained: # TODO: add path to the pretrained model

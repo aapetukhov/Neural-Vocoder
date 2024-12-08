@@ -1,0 +1,13 @@
+defaults:
+  - generator: default
+  - datasets: infer_input2speech
+  - dataloader: infer_input2speech
+  - transforms: text2spec
+  - _self_
+
+inferencer:
+  device_tensors: ["spectrogram"]
+  device: auto
+  save_path: "result"
+  seed: 1
+  from_pretrained: # TODO: add path to the pretrained model

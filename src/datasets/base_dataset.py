@@ -25,6 +25,7 @@ class BaseDataset(Dataset):
         target_sr: int = 22050,
         max_len: int = 8192,
         max_audio_length: int = None,
+        inference = False,
         limit = None,
         shuffle_index = False,
         instance_transforms = None,
@@ -52,6 +53,7 @@ class BaseDataset(Dataset):
         self.instance_transforms = instance_transforms
         self.max_len = max_len
         self.max_audio_length = max_audio_length
+        self.inference = inference
 
     def __getitem__(self, ind):
         """
@@ -104,6 +106,9 @@ class BaseDataset(Dataset):
         audio_tensor = audio_tensor[:1]
         if sr != self.target_sr:
             audio_tensor = torchaudio.functional.resample(audio_tensor, sr, self.target_sr)
+        if self.inference:
+            return audio_tensor
+
         audio_tensor = self._process_audio(audio_tensor, self.max_len)
         return audio_tensor
 

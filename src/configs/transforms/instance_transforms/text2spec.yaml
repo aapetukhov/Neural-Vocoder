@@ -1,0 +1,3 @@
+inference:
+  get_spectrogram:
+    _target_: src.transforms.Text2Spec

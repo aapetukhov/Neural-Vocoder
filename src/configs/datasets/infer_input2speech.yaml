@@ -1,0 +1,8 @@
+test:
+  _target_: src.datasets.BaseDataset
+  instance_transforms: ${transforms.instance_transforms.inference}
+  inference: true
+  index:
+    - text: "Printing, in the only sense with which we are at present concerned, differs from most if not from all the arts and crafts represented in the Exhibition."
+      path: "sample.txt"
+      audio_len: 0

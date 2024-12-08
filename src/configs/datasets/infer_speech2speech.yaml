@@ -1,0 +1,5 @@
+test:
+  _target_: src.datasets.CustomDirAudioDataset
+  instance_transforms: ${transforms.instance_transforms.inference}
+  audio_dir: # TODO: add path to audios for test
+  inference: true
