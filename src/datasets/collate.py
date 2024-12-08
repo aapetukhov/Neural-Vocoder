@@ -1,3 +1,4 @@
+import torch
 from torch.nn.utils.rnn import pad_sequence
 from itertools import chain
 
@@ -15,16 +16,15 @@ def collate_fn(dataset_items: list[dict]):
         result_batch (dict[Tensor]): dict, containing batch-version
             of the tensors.
     """
-    texts = list(chain.from_iterable(item['text'] for item in dataset_items))
-    msg = f"SPEC SHAPE IS: {dataset_items[0]['spectrogram'].shape}"
-    print("-"*len(msg))
-    print(msg)
-    print("-"*len(msg))
+    #not putting on device
+    texts = [item['text'] for item in dataset_items]
 
-    audios = list(chain.from_iterable(item['audio'] for item in dataset_items))
-    audios = pad_sequence(audios, batch_first=True)
+    # on device
+    audios = list(chain.from_iterable(item['audio'] if item['audio'] is not None else [] for item in dataset_items))
+    audios = pad_sequence(audios, batch_first=True) if audios else audios
 
     spectrograms = list(chain.from_iterable(item['spectrogram'].transpose(1, 2) for item in dataset_items))
+    spectrograms = pad_sequence(spectrograms, batch_first=True, padding_value=PAD_CONST).transpose(1, 2)
 
     return {
         "audio": audios,
