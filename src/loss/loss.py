@@ -40,7 +40,7 @@ class DiscriminatorLoss(nn.Module):
         super().__init__()
         self.gan_loss = GANLoss(is_discriminator=True)
 
-    def forward(self, msd_preds, msd_targets, mpd_preds, mpd_targets):
+    def forward(self, msd_preds, msd_targets, mpd_preds, mpd_targets, **batch):
         msd_loss = sum(self.gan_loss(pred, target) for pred, target in zip(msd_preds[-1], msd_targets[-1]))
         mpd_loss = sum(self.gan_loss(pred, target) for pred, target in zip(mpd_preds[-1], mpd_targets[-1]))
         return {"disc_loss": msd_loss + mpd_loss}
@@ -56,7 +56,7 @@ class GeneratorLoss(nn.Module):
         self.lambda_mel = lambda_mel
         self.lambda_fm = lambda_fm
 
-    def forward(self, msd_preds, msd_targets, mpd_preds, mpd_targets, output_audio, spectrogram):
+    def forward(self, msd_preds, msd_targets, mpd_preds, mpd_targets, output_audio, spectrogram, **batch):
         mel_loss = self.mel_loss_fn(output_audio, spectrogram.to(self.device))
         feature_loss = (
             self.feature_matching_loss(msd_preds[:-1], msd_targets[:-1]) +
