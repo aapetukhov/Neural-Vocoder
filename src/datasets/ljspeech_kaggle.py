@@ -53,8 +53,11 @@ class LJspeechDatasetKaggle(BaseDataset):
         wav_dir = self._data_dir / "wavs"
         trans_path = self._data_dir / "metadata.csv"
 
-        if not wav_dir.exists() or not trans_path.exists():
-            raise FileNotFoundError(f"Missing required dataset files: {wav_dir} or {trans_path}.")
+        if not wav_dir.exists():
+            raise FileNotFoundError(f"Missing required dataset files: {wav_dir}")
+
+        if not trans_path.exists():
+            raise FileNotFoundError(f"Missing required dataset files: {trans_path}.")
 
         files = list(wav_dir.glob("*.wav"))
         if len(files) == 0:
