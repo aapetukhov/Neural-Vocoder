@@ -11,7 +11,7 @@ import logging
 
 from src.datasets.base_dataset import BaseDataset
 
-ROOT_PATH = Path("/kaggle/input/the-lj-speech-dataset")
+ROOT_PATH = Path("/kaggle/input/the-lj-speech-dataset/LJSpeech-1.1")
 
 URL_LINKS = {
     "dataset": "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2",
@@ -48,7 +48,7 @@ class LJspeechDatasetKaggle(BaseDataset):
     def _create_index(self, part):
         index = []
         split_dir = self._data_dir / part
-        wav_dir = self._data_dir / "LJSpeech-1.1" / "wavs"
+        wav_dir = self._data_dir / "wavs"
         if not wav_dir.exists():
             raise FileNotFoundError(f"Expected wavs directory {wav_dir} not found.")
         
