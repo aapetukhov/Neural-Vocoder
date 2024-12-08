@@ -33,7 +33,7 @@ class LJspeechDatasetKaggle(BaseDataset):
             data_dir = ROOT_PATH
         self._data_dir = data_dir
         self._index_dir = index_path
-
+        
         index = self._get_or_load_index(part)
         super().__init__(index, *args, **kwargs)
 
@@ -49,39 +49,52 @@ class LJspeechDatasetKaggle(BaseDataset):
         return index
 
     def _create_index(self, part):
-        wav_dir = self._data_dir / "wavs"
-        metadata_path = self._data_dir / "metadata.csv"
+        index = []
+        split_dir = self._data_dir / part
+        if not split_dir.exists():
+            self._prepare_splits()
 
+        wav_dirs = set()
+        for dirpath, dirnames, filenames in os.walk(str(split_dir)):
+            if any([f.endswith(".wav") for f in filenames]):
+                wav_dirs.add(dirpath)
+        
+        for wav_dir in tqdm(list(wav_dirs), desc=f"Preparing LJSpeech folders: {part}"):
+            wav_dir = Path(wav_dir)
+            trans_path = self._data_dir / "metadata.csv"
+            with trans_path.open() as f:
+                for line in f:
+                    w_id, w_text = line.split("|")[0], line.split("|")[2].strip()
+                    wav_path = wav_dir / f"{w_id}.wav"
+                    if not wav_path.exists(): 
+                        continue
+                    t_info = torchaudio.info(str(wav_path))
+                    length = t_info.num_frames / t_info.sample_rate
+                    if w_text.isascii():
+                        index.append(
+                            {
+                                "path": str(wav_path.absolute().resolve()),
+                                "text": w_text.lower(),
+                                "audio_len": length,
+                            }
+                        )
+        return index
+
+    def _prepare_splits(self):
+        print("Splitting dataset...")
+        wav_dir = self._data_dir / "wavs"
         if not wav_dir.exists():
             raise FileNotFoundError(f"Expected wavs directory {wav_dir} not found.")
-        if not metadata_path.exists():
-            raise FileNotFoundError(f"Expected metadata file {metadata_path} not found.")
-        
+
         files = list(wav_dir.iterdir())
-        random.shuffle(files)
-        train_length = int(0.85 * len(files))
-        train_files = set(files[:train_length])
-        test_files = set(files[train_length:])
-
-        with metadata_path.open() as f:
-            metadata = [line.strip().split("|") for line in f]
-
-        index = []
-        for entry in tqdm(metadata, desc=f"Creating index for {part}"):
-            w_id, w_text, _ = entry
-            wav_path = wav_dir / f"{w_id}.wav"
-            if not wav_path.exists():
-                continue
-            
-            t_info = torchaudio.info(str(wav_path))
-            length = t_info.num_frames / t_info.sample_rate
-
-            split = "train" if wav_path in train_files else "test"
-
-            if split == part:
-                index.append({
-                    "path": str(wav_path),
-                    "text": w_text.lower(),
-                    "audio_len": length,
-                })
-        return index
+        train_length = int(0.85 * len(files)) 
+        train_dir = self._data_dir / "train"
+        test_dir = self._data_dir / "test"
+        train_dir.mkdir(exist_ok=True, parents=True)
+        test_dir.mkdir(exist_ok=True, parents=True)
+        
+        for i, fpath in enumerate(files):
+            if i < train_length:
+                shutil.move(str(fpath), str(train_dir / fpath.name))
+            else:
+                shutil.move(str(fpath), str(test_dir / fpath.name))
