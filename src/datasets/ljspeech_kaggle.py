@@ -11,7 +11,7 @@ import logging
 
 from src.datasets.base_dataset import BaseDataset
 
-ROOT_PATH = Path("/kaggle/working/ljspeech")
+ROOT_PATH = Path("/kaggle/working/the-lj-speech-dataset")
 
 URL_LINKS = {
     "dataset": "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2",
