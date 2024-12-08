@@ -20,11 +20,11 @@ optimizer:
 
 gen_scheduler:
   _target_: torch.optim.lr_scheduler.ExponentialLR
-  gamma: 0.999
+  gamma: 0.99999
 
 disc_scheduler:
   _target_: torch.optim.lr_scheduler.ExponentialLR
-  gamma: 0.999
+  gamma: 0.99999
 
 gen_loss_function:
   _target_: src.loss.GeneratorLoss
@@ -45,3 +45,4 @@ trainer:
   early_stop: ${trainer.n_epochs} # epochs for early stopping
   save_dir: "saved"
   seed: 1
+  max_grad_norm: 100

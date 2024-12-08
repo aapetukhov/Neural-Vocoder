@@ -26,8 +26,12 @@ class LJspeechDatasetDatasphere(BaseDataset):
 
     def _load_dataset(self):
         arch_path = self._data_dir / "LJSpeech-1.1.tar.bz2"
-        print("Loading LJSpeech")
+        msg = "LOADING LJSpeech"
+        print("-"*len(msg))
+        print(msg)
+        print("-"*len(msg))
         shutil.unpack_archive(arch_path, self._data_dir)
+        print("ARCHIVE UNPACKED")
         
         dataset_dir = self._data_dir / "LJSpeech-1.1"
         wav_dir = dataset_dir / "wavs"
