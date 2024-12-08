@@ -79,6 +79,8 @@ class BaseDataset(Dataset):
             else self.get_spectrogram([text])
         )
 
+        assert len(spectrogram.shape) == 3, f"UNEXPECTED SPEC SHAPE: {spectrogram.shape}"
+
         instance_data = {
             "audio": audio,
             "spectrogram": spectrogram,
