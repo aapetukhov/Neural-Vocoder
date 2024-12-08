@@ -64,7 +64,7 @@ class Trainer(BaseTrainer):
         batch.update(all_losses)
 
         if self.is_train:
-            batch["gen_loss"].backward()
+            batch["loss"].backward()
             self._clip_grad_norm()
             self.gen_optimizer.step()
             if self.gen_scheduler is not None:
