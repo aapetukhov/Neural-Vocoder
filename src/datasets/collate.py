@@ -1,5 +1,5 @@
 from torch.nn.utils.rnn import pad_sequence
-import chain
+from itertools import chain
 
 PAD_CONST = -11.51292
 

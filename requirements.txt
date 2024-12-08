@@ -16,4 +16,3 @@ pre-commit
 
 speechbrain
 librosa
-chain
