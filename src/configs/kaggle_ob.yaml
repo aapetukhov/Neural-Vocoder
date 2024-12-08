@@ -23,6 +23,7 @@ disc_scheduler:
 
 gen_loss_function:
   _target_: src.loss.GeneratorLoss
+  config: ${transforms.train.get_spectrogram.config}
 
 disc_loss_function:
   _target_: src.loss.DiscriminatorLoss

@@ -47,11 +47,11 @@ class DiscriminatorLoss(nn.Module):
 
 
 class GeneratorLoss(nn.Module):
-    def __init__(self, device="cuda", lambda_mel: float = 45.0, lambda_fm: float = 2.0):
+    def __init__(self, config, device="cuda", lambda_mel: float = 45.0, lambda_fm: float = 2.0):
         super().__init__()
         self.device = device
         self.gan_loss = GANLoss(is_discriminator=False)
-        self.mel_loss_fn = MelSpectrogramLoss(device=device)
+        self.mel_loss_fn = MelSpectrogramLoss(config=config, device=device)
         self.feature_matching_loss = FeatureMatchingLoss()
         self.lambda_mel = lambda_mel
         self.lambda_fm = lambda_fm
