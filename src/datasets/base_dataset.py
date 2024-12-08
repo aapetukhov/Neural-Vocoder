@@ -23,7 +23,7 @@ class BaseDataset(Dataset):
         self,
         index,
         target_sr: int = 22050,
-        max_len: int = 8192 * 2,
+        max_len: int = 8192,
         max_audio_length: int = None,
         limit = None,
         shuffle_index = False,
