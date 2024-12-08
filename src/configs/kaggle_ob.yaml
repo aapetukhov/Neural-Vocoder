@@ -3,7 +3,7 @@ defaults:
   - discriminator: default
   - writer: wandb
   - datasets: ljspeech_kaggle_ob
-  - dataloader: default
+  - dataloader: ob
   - transforms: melspec
   - _self_
 
