@@ -15,6 +15,7 @@ def collate_fn(dataset_items: list[dict]):
         result_batch (dict[Tensor]): dict, containing batch-version
             of the tensors.
     """
+    texts = list(chain.from_iterable(item['text'] for item in dataset_items))
     msg = f"SPEC SHAPE IS: {dataset_items[0]['spectrogram'].shape}"
     print("-"*len(msg))
     print(msg)
@@ -24,7 +25,6 @@ def collate_fn(dataset_items: list[dict]):
     audios = pad_sequence(audios, batch_first=True)
 
     spectrograms = list(chain.from_iterable(item['spectrogram'].transpose(1, 2) for item in dataset_items))
-    texts = sum((item["text"] for item in dataset_items), [])
 
     return {
         "audio": audios,
