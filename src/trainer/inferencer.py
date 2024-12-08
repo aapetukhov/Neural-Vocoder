@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+import torchaudio
 from tqdm.auto import tqdm
 
 from src.metrics.tracker import MetricTracker
@@ -16,11 +18,12 @@ class Inferencer(BaseTrainer):
 
     def __init__(
         self,
-        model,
+        generator: nn.Module,
         config,
         device,
         dataloaders,
         save_path,
+        sample_rate: int = 22050,
         metrics=None,
         batch_transforms=None,
         skip_model_load=False,
@@ -52,11 +55,15 @@ class Inferencer(BaseTrainer):
         ), "Provide checkpoint or set skip_model_load=True"
 
         self.config = config
+        self.sample_rate = sample_rate
         self.cfg_trainer = self.config.inferencer
 
         self.device = device
 
-        self.model = model
+        self.generator = generator
+        self.generator.eval()
+        self.generator.compile()
+
         self.batch_transforms = batch_transforms
 
         # define dataloaders
@@ -119,7 +126,7 @@ class Inferencer(BaseTrainer):
         batch = self.move_batch_to_device(batch)
         batch = self.transform_batch(batch)  # transform batch on device -- faster
 
-        outputs = self.model(**batch)
+        outputs = self.generator(**batch)
         batch.update(outputs)
 
         if metrics is not None:
@@ -135,21 +142,15 @@ class Inferencer(BaseTrainer):
         for i in range(batch_size):
             # clone because of
             # https://github.com/pytorch/pytorch/issues/1995
-            logits = batch["logits"][i].clone()
-            label = batch["labels"][i].clone()
-            pred_label = logits.argmax(dim=-1)
-
-            output_id = current_id + i
-
-            output = {
-                "pred_label": pred_label,
-                "label": label,
-            }
+            output_audio = batch["output_audio"][i].clone().detach().cpu().unsqueeze(0)
 
             if self.save_path is not None:
                 # you can use safetensors or other lib here
-                torch.save(output, self.save_path / part / f"output_{output_id}.pth")
-
+                torchaudio.save(
+                    self.save_path / part / f"output_{i}.wav",
+                    output_audio,
+                    sample_rate=self.sample_rate,
+                )
         return batch
 
     def _inference_part(self, part, dataloader):
@@ -164,7 +165,7 @@ class Inferencer(BaseTrainer):
         """
 
         self.is_train = False
-        self.model.eval()
+        self.generator.eval()
 
         self.evaluation_metrics.reset()
 
