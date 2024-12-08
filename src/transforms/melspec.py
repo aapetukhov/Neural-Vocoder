@@ -10,6 +10,7 @@ PAD_CONST = -11.51292
 class MelSpectrogram(nn.Module):
     def __init__(self, config: dict, normalize: bool = False):
         super().__init__()
+        self.sample_rate = config["sample_rate"]
         self.normalize = normalize
         self.pad_value = config.get("pad_value", PAD_CONST)
         self.mel_spectrogram = torchaudio.transforms.MelSpectrogram(**config)

@@ -20,7 +20,6 @@ class WandBWriter:
         run_id=None,
         run_name=None,
         mode="online",
-        sample_rate=22050,
         **kwargs,
     ):
         """
@@ -64,7 +63,6 @@ class WandBWriter:
         # the mode is usually equal to the current partition name
         # used to separate Partition1 and Partition2 metrics
         self.mode = ""
-        self.sample_rate = sample_rate
         self.timer = datetime.now()
 
     def set_step(self, step, mode="train"):
