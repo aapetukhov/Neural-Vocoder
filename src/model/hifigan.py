@@ -26,11 +26,12 @@ class Generator(nn.Module):
             nn.Tanh()
         )
 
-    def forward(self, spectrogram):
+    def forward(self, spectrogram, **batch) -> dict:
         x = self.input_conv(spectrogram)
         for block in self.upsampling_blocks:
             x = block(x)
-        return x.flatten(1)
+        x = torch.flatten(x, start_dim=1)
+        return {"output_audio": x}
     
     def __str__(self):
         """
@@ -51,8 +52,8 @@ class Discriminator(nn.Module):
         self.preiod_disc = MPD()
         self.scale_dics = MSD()
 
-    def forward(self, output_audio, audio, detach_generated=False, **batch) -> dict:
-        if detach_generated:
+    def forward(self, output_audio, audio, detach=False, **batch) -> dict:
+        if detach:
             output_audio = output_audio.detach()
         return {
             "scale_disc_gt": self.scale_dics(audio),
