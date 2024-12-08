@@ -11,7 +11,7 @@ import logging
 
 from src.datasets.base_dataset import BaseDataset
 
-ROOT_PATH = Path("/kaggle/working/the-lj-speech-dataset")
+ROOT_PATH = Path("/kaggle/input/the-lj-speech-dataset")
 
 URL_LINKS = {
     "dataset": "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2",
@@ -35,14 +35,21 @@ class LJspeechDatasetKaggle(BaseDataset):
         super().__init__(index, *args, **kwargs)
 
     def _load_dataset(self):
-        arch_path = self._data_dir / "LJSpeech-1.1.tar.bz2"
+        arch_path = self._data_dir
         print("Loading LJSpeech")
         
         if not arch_path.exists():
+            msg = "DOWNLOADING DATASET, YOU BETTER DON'T"
+            print("-"*len(msg))
+            print(msg)
+            print("-"*len(msg))
             download_file(URL_LINKS["dataset"], arch_path)
         else:
-            print(f"Archive already exists at {arch_path}. Skipping download.")
-        
+            msg = "Archive already exists at {arch_path}. Skipping download."
+            print("-"*len(msg))
+            print(msg)
+            print("-"*len(msg))
+
         shutil.unpack_archive(arch_path, self._data_dir)
         
         extracted_dir = self._data_dir / "LJSpeech-1.1"
