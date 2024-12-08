@@ -15,14 +15,19 @@ def collate_fn(dataset_items: list[dict]):
             of the tensors.
     """
     msg = f"SPEC SHAPE IS: {dataset_items[0]['spectrogram'].shape}"
-    print("-"*len(msg), msg, "-"*len(msg))
+    print("-"*len(msg))
+    print(msg)
+    print("-"*len(msg))
 
     audios = [audio for item in dataset_items for audio in item["audio"]]
     audios = pad_sequence(audios, batch_first=True)
 
-    spectrograms = [
-        spectrogram.transpose(1, 2) for item in dataset_items for spectrogram in item["spectrogram"]
-    ]
+    spectrograms = []
+    for item in dataset_items:
+        spectrogram = item["spectrogram"]
+        if spectrogram.ndim == 3:
+            spectrogram = spectrogram.squeeze(0)
+        spectrograms.append(spectrogram.transpose(1, 2))
     spectrograms = pad_sequence(spectrograms, batch_first=True, padding_value=PAD_CONST).transpose(1, 2)
     texts = sum((item["text"] for item in dataset_items), [])
 
