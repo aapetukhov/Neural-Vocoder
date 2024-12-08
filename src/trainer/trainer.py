@@ -108,7 +108,7 @@ class Trainer(BaseTrainer):
         self.writer.add_audio(
             audio_name,
             audio.float(),
-            sample_rate=self.mel_spectrogram.sample_rate,
+            sample_rate=self.melspec.sample_rate,
         )
 
     def log_spectrogram(self, spectrogram, output_audio, **batch):
