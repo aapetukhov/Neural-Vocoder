@@ -1,6 +1,6 @@
 # Neural Vocoder (HiFi-GAN) with PyTorch
 
-Ссылка на отчёт: https://wandb.ai/aapetukhov-new-economic-school/Neural-Vocoder/reports/Neural-Vocoder--VmlldzoxMDUxNTExNQ
+Ссылка на отчёт: https://wandb.ai/aapetukhov-new-economic-school/Neural-Vocoder/reports/Neural-Vocoder-Updated---VmlldzoxMDY2ODUzOQ
 
 <p align="center">
   <a href="#about">About</a> •
