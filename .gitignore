@@ -117,3 +117,6 @@ texts
 add_wandb.py
 checkpoint-epoch20.pth
 .DS_Store
+
+LJ001-0001.wav
+LJ001-0002.wav
