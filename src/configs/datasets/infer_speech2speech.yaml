@@ -1,5 +1,5 @@
 test:
   _target_: src.datasets.CustomDirAudioDataset
   instance_transforms: ${transforms.instance_transforms.inference}
-  audio_dir: "/Users/andreypetukhov/Documents/Машинное-обучение/Neural-Vocoder/audios"
+  audio_dir: "/Users/andreypetukhov/Documents/Машинное-обучение/Neural-Vocoder/test_dataset/audios"
   inference: true

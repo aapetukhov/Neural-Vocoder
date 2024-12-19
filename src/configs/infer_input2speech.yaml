@@ -8,6 +8,6 @@ defaults:
 inferencer:
   device_tensors: ["spectrogram"]
   device: auto
-  save_path: "result"
+  save_path: "input2speech_result"
   seed: 1
   from_pretrained: "/Users/andreypetukhov/Documents/Машинное-обучение/Neural-Vocoder/checkpoint-epoch20.pth"

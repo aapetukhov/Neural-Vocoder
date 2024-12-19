@@ -1,3 +1,4 @@
+from src.datasets.base_dataset import BaseDataset
 from src.datasets.ljspeech import LJspeechDataset
 from src.datasets.ljspeech_kaggle import LJspeechDatasetKaggle
 from src.datasets.ljspeech_datasphere import LJspeechDatasetDatasphere

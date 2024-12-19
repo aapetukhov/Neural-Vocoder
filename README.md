@@ -1,71 +1,22 @@
-# PyTorch Template for DL projects
+# Neural Vocoder (HiFi-GAN) with PyTorch
+
+Ссылка на отчёт: https://wandb.ai/aapetukhov-new-economic-school/Neural-Vocoder/reports/Neural-Vocoder--VmlldzoxMDUxNTExNQ
 
 <p align="center">
   <a href="#about">About</a> •
-  <a href="#tutorials">Tutorials</a> •
-  <a href="#examples">Examples</a> •
   <a href="#installation">Installation</a> •
   <a href="#how-to-use">How To Use</a> •
-  <a href="#useful-links">Useful Links</a> •
   <a href="#credits">Credits</a> •
   <a href="#license">License</a>
 </p>
 
-<p align="center">
-<a href="https://github.com/Blinorot/pytorch_project_template/generate">
-  <img src="https://img.shields.io/badge/use%20this-template-green?logo=github">
-</a>
-<a href="https://github.com/Blinorot/pytorch_project_template/blob/main/LICENSE">
-   <img src=https://img.shields.io/badge/license-MIT-blue.svg>
-</a>
-</p>
-
 ## About
 
-WANDB LINK: https://api.wandb.ai/links/aapetukhov-new-economic-school/aqrtqb71
-
-This repository contains a template for [PyTorch](https://pytorch.org/)-based Deep Learning projects.
-
-The template utilizes different python-dev techniques to improve code readability. Configuration methods enhance reproducibility and experiments control.
-
-The repository is released as a part of the [HSE DLA course](https://github.com/markovka17/dla), however, can easily be adopted for any DL-task.
-
-This template is the official recommended template for the [EPFL CS-433 ML Course](https://www.epfl.ch/labs/mlo/machine-learning-cs-433/).
-
-## Tutorials
-
-This template utilizes experiment tracking techniques, such as [WandB](https://docs.wandb.ai/) and [Comet ML](https://www.comet.com/docs/v2/), and [Hydra](https://hydra.cc/docs/intro/) for the configuration. It also automatically reformats code and conducts several checks via [pre-commit](https://pre-commit.com/). If you are not familiar with these tools, we advise you to look at the tutorials below:
-
-- [Python Dev Tips](https://github.com/ebezzam/python-dev-tips): information about [Git](https://git-scm.com/doc), [pre-commit](https://pre-commit.com/), [Hydra](https://hydra.cc/docs/intro/), and other stuff for better Python code development. The YouTube recording of the workshop is available [here](https://youtu.be/okxaTuBdDuY).
-
-- [Seminar on R&D Coding](https://youtu.be/sEA-Js5ZHxU): Seminar from the [LauzHack Deep Learning Bootcamp](https://github.com/LauzHack/deep-learning-bootcamp/) with template discussion and reasoning. It also explains how to work with [WandB](https://docs.wandb.ai/). The seminar materials can be found [here](https://github.com/LauzHack/deep-learning-bootcamp/blob/main/day03/Seminar_WandB_and_Coding.ipynb).
-
-- [HSE DLA Course Introduction Week](https://github.com/markovka17/dla/tree/2024/week01): combines the two seminars above into one with some updates, including an extra example for [Comet ML](https://www.comet.com/docs/v2/).
-
-- [PyTorch Basics](https://github.com/markovka17/dla/tree/2024/week01/intro_to_pytorch): several notebooks with [PyTorch](https://pytorch.org/docs/stable/index.html) basics and corresponding seminar recordings from the [LauzHack Deep Learning Bootcamp](https://github.com/LauzHack/deep-learning-bootcamp/).
-
-To start working with a template, just click on the `use this template` button.
-
-<a href="https://github.com/Blinorot/pytorch_project_template/generate">
-  <img src="https://img.shields.io/badge/use%20this-template-green?logo=github">
-</a>
-
-You can choose any of the branches as a starting point. [Set your choice as the default branch](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/changing-the-default-branch) in the repository settings. You can also [delete unnecessary branches](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-and-deleting-branches-within-your-repository).
-
-## Examples
-
-> [!IMPORTANT]
-> The main branch leaves some of the code parts empty or fills them with dummy examples, showing just the base structure. The final users can add code required for their own tasks.
-
-You can find examples of this template completed for different tasks in other branches:
-
-- [Image classification](https://github.com/Blinorot/pytorch_project_template/tree/example/image-classification): simple classification problem on [MNIST](https://yann.lecun.com/exdb/mnist/) and [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) datasets.
-
-- [ASR](https://github.com/Blinorot/pytorch_project_template/tree/example/asr): template for the automatic speech recognition (ASR) task. Some of the parts (for example, `collate_fn` and beam search for `text_encoder`) are missing for studying purposes of [HSE DLA course](https://github.com/markovka17/dla).
+This repository contains a project on Neural Vocoder HiFi-GAN with all necessary scripts provided for training and evaluating the model. It is worth noting that with better GPUs than a single P100 more extended training time would have been available, so higher results would have been achieved.
 
 ## Installation
 
-Installation may depend on your task. The general steps are the following:
+Follow these steps to install the project:
 
 0. (Optional) Create and activate new environment using [`conda`](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html) or `venv` ([`+pyenv`](https://github.com/pyenv/pyenv)).
 
@@ -103,37 +54,77 @@ Installation may depend on your task. The general steps are the following:
    pre-commit install
    ```
 
-## How To Use
+## Hear with your ears
+<audio controls>
+   <source src="Neural-Vocoder/saved_audios/input2speech_result/test/output_0.wav" type="audio/mpeg">
+</audio>
 
-To train a model, run the following command:
+## How To Train
 
-```bash
-python3 train.py -cn=CONFIG_NAME HYDRA_CONFIG_ARGUMENTS
-```
-
-Where `CONFIG_NAME` is a config from `src/configs` and `HYDRA_CONFIG_ARGUMENTS` are optional arguments.
-
-To run inference (evaluate the model or save predictions):
+To train a model, log in to wandb, clone the repo on Kaggle into the working area and run the following command:
 
 ```bash
-python3 inference.py HYDRA_CONFIG_ARGUMENTS
+python train.py -cn=kaggle_big_grad
 ```
 
-## Useful Links:
+Where all configs are from `src/configs` and `HYDRA_CONFIG_ARGUMENTS` are optional arguments.
 
-You may find the following links useful:
+# How To Evaluate
 
-- [Report branch](https://github.com/Blinorot/pytorch_project_template/tree/report): Guidelines for writing a scientific report/paper (with an emphasis on DL projects).
+Download the pretrained model from [here](https://drive.google.com/drive/folders/1pMJ1x6gwxQyf-twIPXTR-nAGzbraPduN?usp=sharing) and locate them in your directory.
 
-- [CLAIRE Template](https://github.com/CLAIRE-Labo/python-ml-research-template): additional template by [EPFL CLAIRE Laboratory](https://www.epfl.ch/labs/claire/) that can be combined with ours to enhance experiments reproducibility via [Docker](https://www.docker.com/).
+1. To download from terminal:
 
-- [Mamba](https://github.com/mamba-org/mamba) and [Poetry](https://python-poetry.org/): alternatives to [Conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html) and [pip](https://pip.pypa.io/en/stable/installation/) package managers given above.
+```bash
+# install gdown
+pip install gdown
 
-- [Awesome README](https://github.com/matiassingers/awesome-readme): a list of awesome README files for inspiration. Check the basics [here](https://github.com/PurpleBooth/a-good-readme-template).
+# download my model
+gdown 1UH1s6hQSKoNIrokyk1_ZJc6Ud8b2HAaa
+```
+
+To run inference **LOCALLY** your dataset should have a strict structure. See, for example, `test_dataset` folder.
+
+1. To generate an **audio which speaks arbitrary text** `<TEXT>` (which you print in the command line), run the command below. In my case, for example, `<MODEL_PATH>` is `"checkpoint-epoch20.pth"`.
+
+```bash
+TEXT="YOUR TEXT HERE"
+MODEL_PATH="MODEL_PATH"
+
+python inference.py -cn=infer_input2speech \ 
+   '+datasets.test.index=[{"text": $TEXT, "audio_len": 0, "path": "anything.txt"]' \ 
+   'inferencer.from_pretrained=$MODEL_PATH'
+```
+
+2. To generate **audio from a given audio**, put your audios into `<AUDIO_DIR>` and their transcriptions to `<TRANS_DIR>` (see, for example, my `text_dataset/audios` and `text_dataset/transcriptions`).
+
+```bash
+AUDIO_DIR="AUDIO_DIR"
+TRANS_DIR="TRANS_DIR"
+MODEL_PATH="MODEL_PATH"
+
+python inference.py -cn=infer_speech2speech \ 
+   '+datasets.test.data_dir=$AUDIO_DIR' \ 
+   '+datasets.test.transcriptions_dir=$TRANS_DIR' \ 
+   'inferencer.from_pretrained=$MODEL_PATH'
+```
+
+3. To generate **audio from given texts in a form of dataset**, put your texts into `<TEXT_DIR>` (see, for example, my `text_dataset/transcriptions`) and run:
+
+```bash
+TEXT_DIR="TEXT_DIR"
+MODEL_PATH="MODEL_PATH"
+
+python inference.py -cn=infer_text2speech \ 
+   '+datasets.test.data_dir=$TEXT_DIR' \ 
+   'inferencer.from_pretrained=$MODEL_PATH'
+```
+
+After generation check the folder `saved_audios`, you will find your audios there
 
 ## Credits
 
-This repository is based on a heavily modified fork of [pytorch-template](https://github.com/victoresque/pytorch-template) and [asr_project_template](https://github.com/WrathOfGrapes/asr_project_template) repositories.
+This repository is based on a [PyTorch Project Template](https://github.com/Blinorot/pytorch_project_template).
 
 ## License
 

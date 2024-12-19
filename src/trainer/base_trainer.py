@@ -586,7 +586,7 @@ class BaseTrainer:
             pretrained_path (str): path to the model state dict.
         """
         pretrained_path = str(pretrained_path)
-        if hasattr(self, "logger"):  # to support both trainer and inferencer
+        if hasattr(self, "logger"):
             self.logger.info(f"Loading model weights from: {pretrained_path} ...")
         else:
             print(f"Loading model weights from: {pretrained_path} ...")
@@ -594,7 +594,7 @@ class BaseTrainer:
 
         if checkpoint.get("state_dict") is not None:
             self.generator.load_state_dict(checkpoint["gen_state_dict"])
-            self.discriminator.load_state_dict(checkpoint["disc_state_dict"])
+            # self.discriminator.load_state_dict(checkpoint["disc_state_dict"])
         else:
             self.generator.load_state_dict(checkpoint["gen_state_dict"])
-            self.discriminator.load_state_dict(checkpoint["disc_state_dict"])
+            # self.discriminator.load_state_dict(checkpoint["disc_state_dict"])

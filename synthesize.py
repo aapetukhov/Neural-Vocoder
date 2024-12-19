@@ -10,6 +10,8 @@ from src.trainer import Trainer, Inferencer
 from src.utils.io_utils import ROOT_PATH
 from src.utils.init_utils import set_random_seed, setup_saving_and_logging
 
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
 warnings.filterwarnings("ignore", category=UserWarning)
 
 
@@ -26,10 +28,10 @@ def main(config):
     generator = instantiate(config.generator).to(device)
     
     metrics = {"inference": []}
-    for metric_config in config.metrics.get("test", []):
+    for metric_config in []:
         metrics["inference"].append(instantiate(metric_config))
 
-    save_path = ROOT_PATH / "data" / "saved" / config.inferences.save_path
+    save_path = ROOT_PATH / "saved_audios" / config.inferencer.save_path
     save_path.mkdir(exist_ok=True, parents=True)
 
     inferencer = Inferencer(

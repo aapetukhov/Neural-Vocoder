@@ -136,7 +136,7 @@ class Inferencer(BaseTrainer):
         # Some saving logic. This is an example
         # Use if you need to save predictions on disk
 
-        batch_size = batch["logits"].shape[0]
+        batch_size = batch["output_audio"].shape[0]
         current_id = batch_idx * batch_size
 
         for i in range(batch_size):
@@ -147,7 +147,7 @@ class Inferencer(BaseTrainer):
             if self.save_path is not None:
                 # you can use safetensors or other lib here
                 torchaudio.save(
-                    self.save_path / part / f"output_{i}.wav",
+                    self.save_path / part / f"output_{batch_idx + i}.wav",
                     output_audio,
                     sample_rate=self.sample_rate,
                 )
