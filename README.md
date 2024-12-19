@@ -87,36 +87,26 @@ To run inference **LOCALLY** your dataset should have a strict structure. See, f
 1. To generate an **audio which speaks arbitrary text** `<TEXT>` (which you print in the command line), run the command below. In my case, for example, `<MODEL_PATH>` is `"checkpoint-epoch20.pth"`.
 
 ```bash
-TEXT="YOUR TEXT HERE"
-MODEL_PATH="MODEL_PATH"
-
-python inference.py -cn=infer_input2speech \ 
-   '+datasets.test.index=[{"text": $TEXT, "audio_len": 0, "path": "anything.txt"]' \ 
-   'inferencer.from_pretrained=$MODEL_PATH'
+python synthesize.py -cn=infer_input2speech \
+   '+datasets.test.index=[{text: "<TEXT>", audio_len: 0, path: "anything.txt"}]' \
+   'inferencer.from_pretrained="<MODEL_PATH>"'
 ```
 
 2. To generate **audio from a given audio**, put your audios into `<AUDIO_DIR>` and their transcriptions to `<TRANS_DIR>` (see, for example, my `text_dataset/audios` and `text_dataset/transcriptions`).
 
 ```bash
-AUDIO_DIR="AUDIO_DIR"
-TRANS_DIR="TRANS_DIR"
-MODEL_PATH="MODEL_PATH"
-
-python inference.py -cn=infer_speech2speech \ 
-   '+datasets.test.data_dir=$AUDIO_DIR' \ 
-   '+datasets.test.transcriptions_dir=$TRANS_DIR' \ 
-   'inferencer.from_pretrained=$MODEL_PATH'
+python synthesize.py -cn=infer_speech2speech \
+   '++datasets.test.audio_dir="<AUDIO_DIR>"' \
+   '+datasets.test.transcription_dir="<TRANS_DIR>"' \
+   'inferencer.from_pretrained="<MODEL_PATH>"'
 ```
 
 3. To generate **audio from given texts in a form of dataset**, put your texts into `<TEXT_DIR>` (see, for example, my `text_dataset/transcriptions`) and run:
 
 ```bash
-TEXT_DIR="TEXT_DIR"
-MODEL_PATH="MODEL_PATH"
-
-python inference.py -cn=infer_text2speech \ 
-   '+datasets.test.data_dir=$TEXT_DIR' \ 
-   'inferencer.from_pretrained=$MODEL_PATH'
+python synthesize.py -cn=infer_text2speech \
+   '++datasets.test.data_dir="<TEXT_DIR>"' \
+   'inferencer.from_pretrained="<MODEL_PATH>"'
 ```
 
 After generation check the folder `saved_audios`, you will find your audios there
