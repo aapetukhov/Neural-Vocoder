@@ -55,9 +55,8 @@ Follow these steps to install the project:
    ```
 
 ## Hear with your ears
-<audio controls>
-   <source src="Neural-Vocoder/saved_audios/input2speech_result/test/output_0.wav" type="audio/mpeg">
-</audio>
+1. Inner-Analysis. Audios from train (1-st sample from LJSpeech). "Printing, in the only sense with which we are at present concerned, differs from most if not from all the arts and crafts represented in the Exhibition." This is the same file as output_0 in input2speech_results, but in .mp4 format.
+https://github.com/user-attachments/assets/2204a824-51da-43d9-bee3-7e0c556a57d5
 
 ## How To Train
 
