@@ -46,7 +46,8 @@ Follow these steps to install the project:
 
 ## Hear with your ears
 Audios from train (1-st sample from LJSpeech). "Printing, in the only sense with which we are at present concerned, differs from most if not from all the arts and crafts represented in the Exhibition." This is the same file as output_0 in input2speech_results, but in .mp4 format.
-https://github.com/aapetukhov/Neural-Vocoder/blob/main/saved_audios/demonstration/modern.mp4
+
+https://github.com/user-attachments/assets/9a13ba9b-e552-4524-9507-97193ec21793
 
 Hear more on wandb.
 
