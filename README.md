@@ -1,6 +1,6 @@
 # Neural Vocoder (HiFi-GAN) with PyTorch
 
-Ссылка на отчёт: https://wandb.ai/aapetukhov-new-economic-school/Neural-Vocoder/reports/Neural-Vocoder-Updated---VmlldzoxMDY2ODUzOQ
+W&B report link: https://wandb.ai/aapetukhov-new-economic-school/Neural-Vocoder/reports/Neural-Vocoder-Updated---VmlldzoxMDY2ODUzOQ
 
 <p align="center">
   <a href="#about">About</a> •
@@ -12,25 +12,15 @@
 
 ## About
 
-This repository contains a project on Neural Vocoder HiFi-GAN with all necessary scripts provided for training and evaluating the model. It is worth noting that with better GPUs than a single P100 more extended training time would have been available, so higher results would have been achieved.
+HiFi-GAN implemented from scratch in PyTorch.
+
+This repository contains a project on Neural Vocoder HiFi-GAN (Generative Adversarial Network) with all necessary scripts for training and evaluating the model. Model was trained on a single P100 GPU.
 
 ## Installation
 
 Follow these steps to install the project:
 
-0. (Optional) Create and activate new environment using [`conda`](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html) or `venv` ([`+pyenv`](https://github.com/pyenv/pyenv)).
-
-   a. `conda` version:
-
-   ```bash
-   # create env
-   conda create -n project_env python=PYTHON_VERSION
-
-   # activate env
-   conda activate project_env
-   ```
-
-   b. `venv` (`+pyenv`) version:
+0. (Optional) Create and activate new environment using or `venv` ([`+pyenv`](https://github.com/pyenv/pyenv)).
 
    ```bash
    # create env
