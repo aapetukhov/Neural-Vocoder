@@ -46,7 +46,7 @@ Follow these steps to install the project:
 
 ## Hear with your ears
 Audios from train (1-st sample from LJSpeech). "Printing, in the only sense with which we are at present concerned, differs from most if not from all the arts and crafts represented in the Exhibition." This is the same file as output_0 in input2speech_results, but in .mp4 format.
-https://github.com/user-attachments/assets/2204a824-51da-43d9-bee3-7e0c556a57d5
+https://github.com/aapetukhov/Neural-Vocoder/blob/main/saved_audios/demonstration/modern.mp4
 
 Hear more on wandb.
 
@@ -60,7 +60,7 @@ python train.py -cn=kaggle_big_grad
 
 Where all configs are from `src/configs` and `HYDRA_CONFIG_ARGUMENTS` are optional arguments.
 
-# How To Evaluate
+## How To Evaluate
 
 Download the pretrained model from [here](https://drive.google.com/drive/folders/1pMJ1x6gwxQyf-twIPXTR-nAGzbraPduN?usp=sharing) and locate them in your directory.
 
