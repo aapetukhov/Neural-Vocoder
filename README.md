@@ -47,7 +47,7 @@ Follow these steps to install the project:
 ## Hear with your ears
 This is a sample of generated speech from text about Dmitry Shostakovich.
 
-[[https://github.com/user-attachments/assets/9a13ba9b-e552-4524-9507-97193ec21793](https://github.com/user-attachments/assets/0f34bc3e-0d9c-4a0d-9ff9-de7e9a4b6d80)](https://github.com/user-attachments/assets/4d1982a9-d2a9-4457-b3c3-b8083fea1e1b)
+https://github.com/user-attachments/assets/4d1982a9-d2a9-4457-b3c3-b8083fea1e1b
 
 Hear more on wandb.
 
