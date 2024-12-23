@@ -35,7 +35,7 @@ disc_loss_function:
 
 trainer:
   log_step: 50
-  n_epochs: 80
+  n_epochs: 150
   epoch_len: 500
   device_tensors: ["spectrogram", "audio"] # which tensors should be on device (ex. GPU)
   device: auto # device name or "auto"
