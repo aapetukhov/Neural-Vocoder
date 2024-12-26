@@ -561,18 +561,18 @@ class BaseTrainer:
         # self.logger.info(
         #     f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
         # )
-        if "gen_optimizer" not in checkpoint["config"]:
-            # Преобразуем DictConfig в стандартный словарь
-            config_dict = OmegaConf.to_container(checkpoint["config"], resolve=True)
-            formatted_config = json.dumps(config_dict, indent=4, ensure_ascii=False)
-            print(
-                f"""wanted to see gen_optimizer in config\n
-                got:\n{formatted_config}"""
-            )
-            raise KeyError
+        # if "gen_optimizer" not in checkpoint["config"]:
+        #     # Преобразуем DictConfig в стандартный словарь
+        #     config_dict = OmegaConf.to_container(checkpoint["config"], resolve=True)
+        #     formatted_config = json.dumps(config_dict, indent=4, ensure_ascii=False)
+        #     print(
+        #         f"""wanted to see gen_optimizer in config\n
+        #         got:\n{formatted_config}"""
+        #     )
+        #     raise KeyError
 
         if (
-            checkpoint["config"]["gen_optimizer"] != self.config["optimizer"]
+            checkpoint["config"]["optimizer"] != self.config["optimizer"]
             or checkpoint["config"]["gen_scheduler"] != self.config["gen_scheduler"]
         ):
             self.logger.warning(
@@ -585,7 +585,7 @@ class BaseTrainer:
             self.gen_scheduler.load_state_dict(checkpoint["gen_scheduler"])
 
             self.disc_optimizer.load_state_dict(
-                checkpoint["disc_optimizer"]
+                checkpoint["optimizer"]
             )
             self.disc_scheduler.load_state_dict(
                 checkpoint["disc_scheduler"]
