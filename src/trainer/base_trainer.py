@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import json
 from numpy import inf
+from omegaconf import OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from tqdm.auto import tqdm
 
@@ -561,7 +562,9 @@ class BaseTrainer:
         #     f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
         # )
         if "gen_optimizer" not in checkpoint["config"]:
-            formatted_config = json.dumps(checkpoint["config"], indent=4, ensure_ascii=False)
+            # Преобразуем DictConfig в стандартный словарь
+            config_dict = OmegaConf.to_container(checkpoint["config"], resolve=True)
+            formatted_config = json.dumps(config_dict, indent=4, ensure_ascii=False)
             raise KeyError(
                 f"""wanted to see gen_optimizer in config\n
                 got:\n{formatted_config}"""
