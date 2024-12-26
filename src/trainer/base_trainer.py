@@ -581,11 +581,11 @@ class BaseTrainer:
                 "are not resumed."
             )
         else:
-            self.gen_optimizer.load_state_dict(checkpoint["optimizer"])
+            self.gen_optimizer.load_state_dict(checkpoint["gen_optimizer"])
             self.gen_scheduler.load_state_dict(checkpoint["gen_scheduler"])
 
             self.disc_optimizer.load_state_dict(
-                checkpoint["optimizer"]
+                checkpoint["gen_optimizer"]
             )
             self.disc_scheduler.load_state_dict(
                 checkpoint["disc_scheduler"]
