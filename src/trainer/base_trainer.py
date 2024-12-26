@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 import torch
 import torch.nn as nn
+import json
 from numpy import inf
 from torch.nn.utils import clip_grad_norm_
 from tqdm.auto import tqdm
@@ -560,10 +561,11 @@ class BaseTrainer:
         #     f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
         # )
         if "gen_optimizer" not in checkpoint["config"]:
+            formatted_config = json.dumps(checkpoint["config"], indent=4, ensure_ascii=False)
             raise KeyError(
                 f"""wanted to see gen_optimizer in config\n
-                got {checkpoint["config"]}"""
-                )
+                got:\n{formatted_config}"""
+            )
 
         if (
             checkpoint["config"]["gen_optimizer"] != self.config["optimizer"]
