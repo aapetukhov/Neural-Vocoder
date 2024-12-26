@@ -543,6 +543,23 @@ class BaseTrainer:
 
         # load optimizer state from checkpoint only when optimizer type is not changed.
         # for generator
+        # if (
+        #     checkpoint["config"]["gen_optimizer"] != self.config["gen_optimizer"]
+        #     or checkpoint["config"]["gen_scheduler"] != self.config["gen_scheduler"]
+        # ):
+        #     self.logger.warning(
+        #         "Warning: Optimizer or lr_scheduler given in the config file is different "
+        #         "from that of the checkpoint. Optimizer and scheduler parameters "
+        #         "are not resumed."
+        #     )
+        # else:
+        #     self.gen_optimizer.load_state_dict(checkpoint["gen_optimizer"])
+        #     self.gen_scheduler.load_state_dict(checkpoint["gen_scheduler"])
+
+        # self.logger.info(
+        #     f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
+        # )
+
         if (
             checkpoint["config"]["gen_optimizer"] != self.config["gen_optimizer"]
             or checkpoint["config"]["gen_scheduler"] != self.config["gen_scheduler"]
@@ -555,24 +572,31 @@ class BaseTrainer:
         else:
             self.gen_optimizer.load_state_dict(checkpoint["gen_optimizer"])
             self.gen_scheduler.load_state_dict(checkpoint["gen_scheduler"])
-        
-        # the same for discriminator
-        if (
-            checkpoint["config"]["disc_optimizer"] != self.config["disc_optimizer"]
-            or checkpoint["config"]["disc_scheduler"] != self.config["disc_scheduler"]
-        ):
-            self.logger.warning(
-                "Warning: Optimizer or lr_scheduler given in the config file is different "
-                "from that of the checkpoint. Optimizer and scheduler parameters "
-                "are not resumed."
-            )
-        else:
-            self.disc_optimizer.load_state_dict(checkpoint["disc_optimizer"])
-            self.disc_scheduler.load_state_dict(checkpoint["disc_scheduler"])
 
-        self.logger.info(
-            f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
-        )
+            self.disc_optimizer.load_state_dict(
+                checkpoint["disc_optimizer"]
+            )
+            self.disc_scheduler.load_state_dict(
+                checkpoint["disc_scheduler"]
+            )
+        
+        # # the same for discriminator
+        # if (
+        #     checkpoint["config"]["disc_optimizer"] != self.config["disc_optimizer"]
+        #     or checkpoint["config"]["disc_scheduler"] != self.config["disc_scheduler"]
+        # ):
+        #     self.logger.warning(
+        #         "Warning: Optimizer or lr_scheduler given in the config file is different "
+        #         "from that of the checkpoint. Optimizer and scheduler parameters "
+        #         "are not resumed."
+        #     )
+        # else:
+        #     self.disc_optimizer.load_state_dict(checkpoint["disc_optimizer"])
+        #     self.disc_scheduler.load_state_dict(checkpoint["disc_scheduler"])
+
+        # self.logger.info(
+        #     f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
+        # )
 
     def _from_pretrained(self, pretrained_path):
         """
