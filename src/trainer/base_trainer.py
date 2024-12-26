@@ -565,10 +565,11 @@ class BaseTrainer:
             # Преобразуем DictConfig в стандартный словарь
             config_dict = OmegaConf.to_container(checkpoint["config"], resolve=True)
             formatted_config = json.dumps(config_dict, indent=4, ensure_ascii=False)
-            raise KeyError(
+            print(
                 f"""wanted to see gen_optimizer in config\n
                 got:\n{formatted_config}"""
             )
+            raise KeyError
 
         if (
             checkpoint["config"]["gen_optimizer"] != self.config["optimizer"]
