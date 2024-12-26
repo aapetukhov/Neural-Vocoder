@@ -561,7 +561,7 @@ class BaseTrainer:
         # )
 
         if (
-            checkpoint["config"]["gen_optimizer"] != self.config["gen_optimizer"]
+            checkpoint["config"]["gen_optimizer"] != self.config["optimizer"]
             or checkpoint["config"]["gen_scheduler"] != self.config["gen_scheduler"]
         ):
             self.logger.warning(
@@ -570,7 +570,7 @@ class BaseTrainer:
                 "are not resumed."
             )
         else:
-            self.gen_optimizer.load_state_dict(checkpoint["gen_optimizer"])
+            self.gen_optimizer.load_state_dict(checkpoint["optimizer"])
             self.gen_scheduler.load_state_dict(checkpoint["gen_scheduler"])
 
             self.disc_optimizer.load_state_dict(
