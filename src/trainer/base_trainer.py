@@ -559,6 +559,11 @@ class BaseTrainer:
         # self.logger.info(
         #     f"Checkpoint loaded. Resume training from epoch {self.start_epoch}"
         # )
+        if "gen_optimizer" not in checkpoint["config"]:
+            raise KeyError(
+                f"""wanted to see gen_optimizer in config\n
+                got {checkpoint["config"]}"""
+                )
 
         if (
             checkpoint["config"]["gen_optimizer"] != self.config["optimizer"]
